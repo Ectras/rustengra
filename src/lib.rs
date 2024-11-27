@@ -5,7 +5,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
-/// Converts tensor leg inputs (as usize) to chars. Updates size dict and
+/// Converts tensor leg inputs (as usize) to chars. Creates new inputs, outputs and size_dict that can be fed to Cotengra.
 pub fn tensor_legs_to_digit(
     inputs: &[Vec<usize>],
     outputs: &[usize],
@@ -35,7 +35,13 @@ pub fn tensor_legs_to_digit(
     )
 }
 
-/// Accepts a vector of tensor legs,
+/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra
+///
+/// Accepts inputs as iterable[iterable[char]], output as iterable[char] and a size_dict that
+/// maps from `char` to u64.
+/// Creates a ContractionTree in Cotengra and calls subtree_reconfigure to find an improved
+/// Contraction. Returns a PyResult of the best new Contraction path converted to a replace_path.
+/// If input !`is_ssa` converts it to an SSA path.
 pub fn create_and_optimize_tree(
     inputs: &[Vec<char>],
     outputs: Vec<char>,
@@ -75,7 +81,7 @@ pub fn create_and_optimize_tree(
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))
 }
 
-/// Converts path from SSA to
+/// Converts path from SSA to replace path format
 pub fn ssa_to_replace_path(
     mut ssa_path: Vec<(usize, usize)>,
     tensor_len: usize,
@@ -94,6 +100,7 @@ pub fn ssa_to_replace_path(
     ssa_path
 }
 
+/// Converts path from replace path to SSA path format
 pub fn replace_to_ssa_path(
     mut replace_path: Vec<(usize, usize)>,
     tensor_len: usize,
