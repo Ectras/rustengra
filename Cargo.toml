@@ -1,0 +1,8 @@
+[package]
+name = "rustengra"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+pyo3 = "0.23.2"
+rustc-hash = "2.0.0"
