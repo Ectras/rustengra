@@ -5,11 +5,12 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
+/// Converts tensor leg inputs (as usize) to chars. Updates size dict and
 pub fn tensor_legs_to_digit(
     inputs: &[Vec<usize>],
     outputs: &[usize],
-    size_dict: FxHashMap<usize, usize>,
-) -> (Vec<Vec<char>>, Vec<char>, FxHashMap<char, usize>) {
+    size_dict: FxHashMap<usize, u64>,
+) -> (Vec<Vec<char>>, Vec<char>, FxHashMap<char, u64>) {
     let mut new_inputs = vec![Vec::new(); inputs.len()];
     let mut leg_to_digit = FxHashMap::<usize, char>::default();
     let mut new_size_dict = FxHashMap::default();
@@ -38,7 +39,7 @@ pub fn tensor_legs_to_digit(
 pub fn create_and_optimize_tree(
     inputs: &[Vec<char>],
     outputs: Vec<char>,
-    size_dict: FxHashMap<char, usize>,
+    size_dict: FxHashMap<char, u64>,
     path: Vec<(usize, usize)>,
     subtree_size: usize,
     is_ssa: bool,
