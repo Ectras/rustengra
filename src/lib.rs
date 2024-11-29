@@ -6,6 +6,7 @@ use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
 pub fn contengra_check() {
+    pyo3::prepare_freethreaded_python();
     Python::with_gil(|py| {
         PyModule::import(py, "cotengra").unwrap();
     })
