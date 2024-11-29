@@ -50,4 +50,6 @@ RUN --mount=type=ssh \
     # 2. Clean intermediate files
     cd .. && \
     rm -rf dummy
-RUN python3 -m pip install cotengra
+RUN curl "https://pyenv.run" | bash \\
+    pyenv install 3.12.3 \\
+    pip install cotengra
