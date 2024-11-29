@@ -5,13 +5,6 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
-pub fn contengra_check() -> PyResult<()> {
-    Python::with_gil(|py| {
-        let cotengra = PyModule::import(py, "cotengra").unwrap();
-    });
-    Ok(())
-}
-
 /// Converts tensor leg inputs (as usize) to chars. Creates new inputs, outputs and size_dict that can be fed to Cotengra.
 pub fn tensor_legs_to_digit(
     inputs: &[Vec<usize>],
@@ -130,6 +123,11 @@ pub fn replace_to_ssa_path(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_contengra_check() {
+        contengra_check();
+    }
 
     #[test]
     fn test_tensor_inputs_to_char() {
