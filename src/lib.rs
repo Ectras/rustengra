@@ -5,11 +5,11 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
-pub fn contengra_check() {
-    pyo3::prepare_freethreaded_python();
+pub fn contengra_check() -> PyResult<()> {
     Python::with_gil(|py| {
-        PyModule::import(py, "cotengra").unwrap();
-    })
+        let cotengra = PyModule::import(py, "cotengra").unwrap();
+    });
+    Ok(())
 }
 
 /// Converts tensor leg inputs (as usize) to chars. Creates new inputs, outputs and size_dict that can be fed to Cotengra.
