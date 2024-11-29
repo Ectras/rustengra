@@ -1,13 +1,14 @@
 FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND="noninteractive" \
     PATH="/root/.cargo/bin:${PATH}"
-COPY rust-toolchain.toml .
+
 RUN apt-get update && \
     # 1. Install dependencies for the toolchain
     apt-get install -y openssh-client jq && \
     # 2. Install rust
     apt-get install -y build-essential curl && \
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain none --no-modify-path && \
+COPY rust-toolchain.toml .
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain none --no-modify-path && \
     # 3. Trigger installation of rust
     rustup show && \
     # 4. Install dependencies for the project
