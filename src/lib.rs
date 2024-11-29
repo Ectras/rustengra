@@ -5,7 +5,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
-pub fn contengra_check() -> PyResult<()> {
+pub fn cotengra_check() -> PyResult<()> {
     pyo3::prepare_freethreaded_python();
     Python::with_gil(|py| {
         let cotengra = PyModule::import(py, "cotengra").unwrap();
@@ -134,7 +134,7 @@ mod tests {
 
     #[test]
     fn test_contengra_check() {
-        let _ = contengra_check();
+        let _ = cotengra_check();
     }
 
     #[test]
