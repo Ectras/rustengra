@@ -8,7 +8,7 @@ use rustc_hash::FxHashMap;
 pub fn cotengra_check() -> PyResult<()> {
     pyo3::prepare_freethreaded_python();
     Python::with_gil(|py| {
-        let cotengra = PyModule::import(py, "cotengra").unwrap();
+        let _ = PyModule::import(py, "cotengra").unwrap();
     });
     Ok(())
 }
