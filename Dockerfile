@@ -4,8 +4,9 @@ RUN apt-get update && \
 RUN python3 -m venv /root/cotengra_python && \
     /root/cotengra_python/bin/pip install cotengra && \
     echo 'source /root/cotengra_python/bin/activate' >> /root/.bashrc
+CMD . /root/cotengra_python/bin/activate
 ENV VIRTUAL_ENV="/root/cotengra_python" \
-    LD_LIBRARY_PATH="$/root/cotengra_python/lib:/usr/lib/python3.12/config-3.12-x86_64-linux-gnu:${LD_LIBRARY_PATH}" 
+    LD_LIBRARY_PATH="$/root/cotengra_python/lib:/usr/lib/python3.12/config-3.12-x86_64-linux-gnu:/usr/local/lib:${LD_LIBRARY_PATH}" 
 ENV PATH="/root/cotengra_python/bin/:${PATH}"
 ENV DEBIAN_FRONTEND="noninteractive" \
     PATH="/root/.cargo/bin:${PATH}"
