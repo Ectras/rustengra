@@ -129,15 +129,14 @@ pub fn replace_to_ssa_path(
 ) -> Vec<(usize, usize)> {
     let mut next_id = tensor_len;
     let mut id_update = HashMap::new();
-
     for (i, j) in replace_path.iter_mut() {
         let left_id = *id_update.get(i).unwrap_or(i);
         let right_id = *id_update.get(j).unwrap_or(j);
+
         id_update.insert(*i, next_id);
+        next_id += 1;
         *i = left_id;
         *j = right_id;
-
-        next_id += 1;
     }
     replace_path
 }
