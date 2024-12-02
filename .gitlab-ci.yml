@@ -2,8 +2,3 @@ include:
 - project: 'quantum-research/tensornetworksimulation/rust-ci'
   ref: 08031fa3b7e1353000f7f100facfbd4a3064226a
   file: 'template.yml'
-
-variables:
-  OMPI_ALLOW_RUN_AS_ROOT: 1
-  OMPI_ALLOW_RUN_AS_ROOT_CONFIRM: 1
-
