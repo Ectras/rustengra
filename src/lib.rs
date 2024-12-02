@@ -43,10 +43,9 @@ pub fn tensor_legs_to_digit(
 
 /// Accepts tensor network information and returns an optimized ContractionTree via Cotengra
 ///
-/// Accepts inputs as iterable[iterable[char]], output as iterable[char] and a size_dict that
-/// maps from `char` to u64.
-/// Creates a ContractionTree in Cotengra and calls subtree_reconfigure to find an improved
-/// Contraction. Returns a PyResult of the best new Contraction path converted to a replace_path.
+/// Accepts inputs as `iterable[iterable[str]]`, output as `iterable[str]` and a size dict as `dict[str, int]`.
+/// Creates a `ContractionTree` in Cotengra and calls `subtree_reconfigure` to find an improved
+/// Contraction. Returns a `PyResult` of the best new Contraction path converted to a `replace_path`.
 /// If input !`is_ssa` converts it to an SSA path.
 pub fn create_and_optimize_tree(
     inputs: &[Vec<String>],
@@ -87,7 +86,15 @@ pub fn create_and_optimize_tree(
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))
 }
 
-/// Converts path from SSA to replace path format
+/// Converts path from SSA to replace path format.
+///
+/// # Example
+/// ```
+/// # use rustengra::ssa_to_replace_path;
+/// let ssa_path = vec![(0, 3), (4, 1), (2, 5)];
+/// let replace_path = ssa_to_replace_path(ssa_path, 4);
+/// assert_eq!(replace_path, vec![(0, 3), (0, 1), (2, 0)]);
+/// ```
 pub fn ssa_to_replace_path(
     mut ssa_path: Vec<(usize, usize)>,
     tensor_len: usize,
@@ -106,7 +113,16 @@ pub fn ssa_to_replace_path(
     ssa_path
 }
 
-/// Converts path from replace path to SSA path format
+/// Converts path from replace path to SSA path format.
+///
+/// # Example
+/// ```
+/// # use rustengra::replace_to_ssa_path;
+///
+/// let ssa_path = vec![(0, 3), (0, 1), (2, 0)];
+/// let replace_path = replace_to_ssa_path(ssa_path, 4);
+/// assert_eq!(replace_path, vec![(0, 3), (4, 1), (2, 5)]);
+/// ```
 pub fn replace_to_ssa_path(
     mut replace_path: Vec<(usize, usize)>,
     tensor_len: usize,
@@ -170,21 +186,5 @@ mod tests {
                 (String::from("7"), 11),
             ])
         );
-    }
-
-    #[test]
-    fn test_ssa_to_replace_path() {
-        let ssa_path = vec![(0, 3), (4, 1), (2, 5)];
-        let replace_path = ssa_to_replace_path(ssa_path, 4);
-
-        assert_eq!(replace_path, vec![(0, 3), (0, 1), (2, 0)]);
-    }
-
-    #[test]
-    fn test_replace_to_ssa_path() {
-        let ssa_path = vec![(0, 3), (0, 1), (2, 0)];
-        let replace_path = replace_to_ssa_path(ssa_path, 4);
-
-        assert_eq!(replace_path, vec![(0, 3), (4, 1), (2, 5)]);
     }
 }
