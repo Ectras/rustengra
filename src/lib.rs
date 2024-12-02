@@ -24,20 +24,14 @@ pub fn tensor_legs_to_digit(
     size_dict: FxHashMap<usize, u64>,
 ) -> (Vec<Vec<String>>, Vec<String>, FxHashMap<String, u64>) {
     let mut new_inputs = vec![Vec::new(); inputs.len()];
-    let mut leg_to_digit = FxHashMap::<usize, String>::default();
     let mut new_size_dict = FxHashMap::default();
 
     for (tensor, new_tensor) in zip(inputs.iter(), new_inputs.iter_mut()) {
-        for leg in tensor.iter() {
-            let to_string = leg_to_digit.get(leg);
-            let string_value = if let Some(string_value) = to_string {
-                string_value.clone()
-            } else {
-                leg.to_string()
-            };
-            leg_to_digit.insert(*leg, string_value.clone());
+        new_tensor.reserve_exact(tensor.len());
+        for leg in tensor {
+            let string_value = leg.to_string();
             new_tensor.push(string_value.clone());
-            new_size_dict.insert(string_value, *size_dict.get(leg).unwrap());
+            new_size_dict.insert(string_value, size_dict[leg]);
         }
     }
     (
