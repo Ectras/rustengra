@@ -5,12 +5,16 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
+/// Checks if Cotengra is installed in the current environment.
+///
+/// # Example
+/// ```
+/// # use rustengra::cotengra_check;
+/// assert!(cotengra_check().is_ok());
+/// ```
 pub fn cotengra_check() -> PyResult<()> {
     pyo3::prepare_freethreaded_python();
-    Python::with_gil(|py| {
-        let _ = PyModule::import(py, "cotengra").unwrap();
-    });
-    Ok(())
+    Python::with_gil(|py| PyModule::import(py, "cotengra").map(|_| ()))
 }
 
 /// Converts tensor leg inputs (as usize) to chars. Creates new inputs, outputs and size_dict that can be fed to Cotengra.
@@ -131,11 +135,6 @@ pub fn replace_to_ssa_path(
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_contengra_check() {
-        let _ = cotengra_check();
-    }
 
     #[test]
     fn test_tensor_inputs_to_string() {
