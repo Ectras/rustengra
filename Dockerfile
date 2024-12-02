@@ -1,24 +1,28 @@
 FROM ubuntu:24.04
-RUN apt-get update && \
-    apt-get install -y build-essential python3-full python3-venv
-RUN python3 -m venv /root/cotengra_python && \
-    /root/cotengra_python/bin/pip install cotengra && \
-    echo 'source /root/cotengra_python/bin/activate' >> /root/.bashrc
-CMD . /root/cotengra_python/bin/activate
-ENV VIRTUAL_ENV="/root/cotengra_python" \
-    LD_LIBRARY_PATH="/root/cotengra_python/lib:/usr/lib/python3.12/config-3.12-x86_64-linux-gnu:/usr/local/lib:${LD_LIBRARY_PATH}" 
-ENV PATH="/root/cotengra_python/bin/:${PATH}"
 ENV DEBIAN_FRONTEND="noninteractive" \
-    PATH="/root/.cargo/bin:${PATH}"
+    PATH="/root/.cargo/bin:/root/cotengra_python/bin:${PATH}"
 COPY rust-toolchain.toml .
-# 1. Install dependencies for the toolchain
-RUN apt-get install -y openssh-client jq && \
+RUN \
+    # 0. Add apt repositories
+    apt-get update && \
+    apt-get install -y software-properties-common && \
+    add-apt-repository ppa:deadsnakes/ppa && \
+    apt-get update && \
+    # 1. Install dependencies for the toolchain
+    apt-get install -y openssh-client jq && \
     # 2. Install rust
     apt-get install -y curl && \
     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain none --no-modify-path && \
     # 3. Trigger installation of rust
     rustup show && \
-    # 4. Clear intermediate files
+    # 4. Install python
+    apt-get install -y python3.12 python3.12-dev python3.12-venv && \
+    # 5. Install python packages
+    python3.12 -m venv /root/cotengra_python && \
+    pip install cotengra && \
+    # 6. Install dependencies for the project
+    apt-get install -y build-essential && \
+    # 7. Clear intermediate files
     apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY Cargo.toml Cargo.lock tmp/
 ARG SSH_PRIVATE_KEY
