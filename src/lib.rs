@@ -21,7 +21,7 @@ pub fn cotengra_check() -> PyResult<()> {
 pub fn tensor_legs_to_digit(
     inputs: &[Vec<usize>],
     outputs: &[usize],
-    size_dict: FxHashMap<usize, u64>,
+    size_dict: &FxHashMap<usize, u64>,
 ) -> (Vec<Vec<String>>, Vec<String>, FxHashMap<String, u64>) {
     let mut new_inputs = vec![Vec::new(); inputs.len()];
     let mut new_size_dict = FxHashMap::default();
@@ -161,7 +161,7 @@ mod tests {
         ]);
 
         let (new_inputs, new_outputs, new_size_dict) =
-            tensor_legs_to_digit(&inputs, &outputs, size_dict);
+            tensor_legs_to_digit(&inputs, &outputs, &size_dict);
 
         assert_eq!(
             new_inputs,
