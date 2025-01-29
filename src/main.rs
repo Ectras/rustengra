@@ -1,5 +1,5 @@
 use rustc_hash::FxHashMap;
-use rustengra::create_and_optimize_tree;
+use rustengra::cotengra_optimize_from_path;
 
 fn main() {
     pyo3::prepare_freethreaded_python();
@@ -34,5 +34,5 @@ fn main() {
 
     let ssa_path = vec![(0, 1), (6, 2), (7, 3), (8, 4), (9, 5)];
 
-    let _ = create_and_optimize_tree(&inputs, outputs, size_dict, ssa_path, 8, true);
+    let _ = cotengra_optimize_from_path(&inputs, outputs, size_dict, ssa_path, 8, true);
 }
