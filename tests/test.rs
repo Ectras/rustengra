@@ -102,10 +102,10 @@ fn greedy_integration_test() {
         (String::from("0"), 2),
     ]);
 
-    let contraction_path = cotengra_greedy(&inputs, outputs, size_dict, 8).unwrap();
+    let contraction_path = cotengra_greedy(&inputs, outputs, size_dict).unwrap();
 
     assert_eq!(
         contraction_path,
-        vec![(0, 2), (3, 0), (4, 3), (5, 4), (1, 5)]
+        vec![(1, 3), (4, 1), (5, 4), (0, 2), (5, 0)]
     )
 }
