@@ -129,7 +129,7 @@ pub fn cotengra_optimized_greedy(
     inputs: &[Vec<String>],
     outputs: Vec<String>,
     size_dict: FxHashMap<String, u64>,
-    subtree_size: u64,
+    subtree_size: usize,
 ) -> PyResult<Vec<(usize, usize)>> {
     pyo3::prepare_freethreaded_python();
     let contraction_path: Vec<(usize, usize)> = Python::with_gil(|py| {
