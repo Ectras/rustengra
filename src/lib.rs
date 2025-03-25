@@ -164,6 +164,8 @@ pub fn cotengra_optimized_greedy(
 pub fn cotengra_sa_tree(
     inputs: &[Vec<String>],
     outputs: Vec<String>,
+    steps: Option<usize>,
+    iter: Option<usize>,
     size_dict: FxHashMap<String, u64>,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
@@ -175,6 +177,14 @@ pub fn cotengra_sa_tree(
 
         let kwargs = PyDict::new(py);
         kwargs.set_item("optimize", String::from("greedy"))?;
+
+        if let Some(steps) = steps {
+            kwargs.set_item("tsteps", steps)?;
+        }
+
+        if let Some(iter) = iter {
+            kwargs.set_item("numiter", iter)?;
+        }
 
         let tree_obj = cotengra
             .getattr("array_contract_tree")?
@@ -214,6 +224,7 @@ pub fn cotengra_sa_tree(
 pub fn cotengra_tree_tempering(
     inputs: &[Vec<String>],
     outputs: Vec<String>,
+    iter: Option<usize>,
     size_dict: FxHashMap<String, u64>,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
@@ -225,6 +236,10 @@ pub fn cotengra_tree_tempering(
 
         let kwargs = PyDict::new(py);
         kwargs.set_item("optimize", String::from("greedy"))?;
+
+        if let Some(iter) = iter {
+            kwargs.set_item("numiter", iter)?;
+        }
 
         let tree_obj = cotengra
             .getattr("array_contract_tree")?

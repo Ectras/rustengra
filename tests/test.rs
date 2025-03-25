@@ -139,7 +139,8 @@ fn sa_integration_test() {
         (String::from("0"), 2),
     ]);
 
-    let contraction_path = cotengra_sa_tree(&inputs, outputs, size_dict, Some(4)).unwrap();
+    let contraction_path =
+        cotengra_sa_tree(&inputs, outputs, None, None, size_dict, Some(4)).unwrap();
 
     assert_eq!(
         contraction_path,
@@ -173,7 +174,8 @@ fn tempering_integration_test() {
         (String::from("0"), 2),
     ]);
 
-    let contraction_path = cotengra_tree_tempering(&inputs, outputs, size_dict, Some(4)).unwrap();
+    let contraction_path =
+        cotengra_tree_tempering(&inputs, outputs, None, size_dict, Some(4)).unwrap();
 
     assert_eq!(
         contraction_path,
