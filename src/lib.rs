@@ -178,14 +178,6 @@ pub fn cotengra_sa_tree(
         let kwargs = PyDict::new(py);
         kwargs.set_item("optimize", String::from("greedy"))?;
 
-        if let Some(steps) = steps {
-            kwargs.set_item("tsteps", steps)?;
-        }
-
-        if let Some(iter) = iter {
-            kwargs.set_item("numiter", iter)?;
-        }
-
         let tree_obj = cotengra
             .getattr("array_contract_tree")?
             .call(args, Some(&kwargs))?;
@@ -194,6 +186,14 @@ pub fn cotengra_sa_tree(
         if let Some(seed) = seed {
             let kwargs = PyDict::new(py);
             kwargs.set_item("seed", seed)?;
+
+            if let Some(steps) = steps {
+                kwargs.set_item("tsteps", steps)?;
+            }
+    
+            if let Some(iter) = iter {
+                kwargs.set_item("numiter", iter)?;
+            }
 
             cotengra
                 .getattr("pathfinders")?
@@ -237,10 +237,6 @@ pub fn cotengra_tree_tempering(
         let kwargs = PyDict::new(py);
         kwargs.set_item("optimize", String::from("greedy"))?;
 
-        if let Some(iter) = iter {
-            kwargs.set_item("numiter", iter)?;
-        }
-
         let tree_obj = cotengra
             .getattr("array_contract_tree")?
             .call(args, Some(&kwargs))?;
@@ -249,6 +245,10 @@ pub fn cotengra_tree_tempering(
         if let Some(seed) = seed {
             let kwargs = PyDict::new(py);
             kwargs.set_item("seed", seed)?;
+
+            if let Some(iter) = iter {
+                kwargs.set_item("numiter", iter)?;
+            }
 
             cotengra
                 .getattr("pathfinders")?
