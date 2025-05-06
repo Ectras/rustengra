@@ -41,10 +41,10 @@ pub fn tensor_legs_to_digit(
     )
 }
 
-/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra
+/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
 ///
 /// Accepts inputs as `iterable[iterable[str]]`, output as `iterable[str]`, a size dict as `dict[str, int]`,
-/// a starting path as `vec![(usize, usize)], the subtree size for optimization as `u64` and `is_ssa` as bool.
+/// a starting path as `vec![(usize, usize)]`, the subtree size for optimization as `u64` and `is_ssa` as bool.
 /// Creates a `ContractionTree` in Cotengra and calls `subtree_reconfigure` to find an improved
 /// Contraction. Returns a `PyResult` of the best new Contraction path converted to a `replace_path`.
 /// If input !`is_ssa` converts it to an SSA path.
@@ -87,9 +87,9 @@ pub fn cotengra_optimize_from_path(
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))
 }
 
-/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra
+/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
 ///
-/// Accepts inputs as iterable[iterable[char]], output as iterable[char], a size_dict that
+/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size_dict that
 /// maps from `char` to u64,
 /// Creates a ContractionTree in Cotengra by a Greedy method.
 /// Returns a PyResult of the Greedy tree converted to a replace_path.
@@ -118,9 +118,9 @@ pub fn cotengra_greedy(
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))
 }
 
-/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra
+/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
 ///
-/// Accepts inputs as iterable[iterable[char]], output as iterable[char], a size_dict that
+/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size_dict that
 /// maps from `char` to u64 and a subtree size for optimization.
 /// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it.
 /// Returns a PyResult of the optimized tree converted to a replace_path.
@@ -154,9 +154,9 @@ pub fn cotengra_optimized_greedy(
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))
 }
 
-/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra
+/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
 ///
-/// Accepts inputs as iterable[iterable[char]], output as iterable[char], a size_dict that
+/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size_dict that
 /// maps from `char` to u64 and a subtree size for optimization.
 /// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it.
 /// Returns a PyResult of the optimized tree converted to a replace_path.
@@ -214,9 +214,9 @@ pub fn cotengra_sa_tree(
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))
 }
 
-/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra
+/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
 ///
-/// Accepts inputs as iterable[iterable[char]], output as iterable[char], a size_dict that
+/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size_dict that
 /// maps from `char` to u64 and a subtree size for optimization.
 /// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it.
 /// Returns a PyResult of the optimized tree converted to a replace_path.
@@ -269,7 +269,15 @@ pub fn cotengra_tree_tempering(
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))
 }
 
-/// Converts path from SSA to replace path format
+/// Converts path from SSA to replace path format.
+/// 
+/// # Example
+/// ```
+/// # use rustengra::ssa_to_replace_path;
+/// let ssa_path = vec![(0, 3), (4, 1), (2, 5)];
+/// let replace_path = ssa_to_replace_path(ssa_path, 4);
+/// assert_eq!(replace_path, vec![(0, 3), (0, 1), (2, 0)]);
+/// ```
 pub fn ssa_to_replace_path(
     mut ssa_path: Vec<(usize, usize)>,
     tensor_len: usize,
