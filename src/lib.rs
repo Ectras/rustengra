@@ -73,6 +73,7 @@ pub fn cotengra_optimize_from_path(
 
         let opt_kwargs = PyDict::new(py);
         opt_kwargs.set_item("subtree_size", subtree_size)?;
+        opt_kwargs.set_item("inplace", true)?;
 
         let args = (inputs, outputs).into_pyobject(py)?;
         cotengra
@@ -142,6 +143,7 @@ pub fn cotengra_optimized_greedy(
 
         let opt_kwargs = PyDict::new(py);
         opt_kwargs.set_item("subtree_size", subtree_size)?;
+        opt_kwargs.set_item("inplace", true)?;
 
         cotengra
             .getattr("array_contract_tree")?
@@ -194,6 +196,7 @@ pub fn cotengra_sa_tree(
             if let Some(iter) = iter {
                 kwargs.set_item("numiter", iter)?;
             }
+            kwargs.set_item("inplace", true)?;
 
             cotengra
                 .getattr("pathfinders")?
@@ -249,6 +252,7 @@ pub fn cotengra_tree_tempering(
             if let Some(iter) = iter {
                 kwargs.set_item("numiter", iter)?;
             }
+            kwargs.set_item("inplace", true)?;
 
             cotengra
                 .getattr("pathfinders")?
