@@ -1,7 +1,6 @@
 use rustc_hash::FxHashMap;
 use rustengra::{
-    cotengra_greedy, cotengra_optimize_from_path, cotengra_optimized_greedy, cotengra_sa_tree,
-    cotengra_tree_tempering,
+    cotengra_greedy, cotengra_hyperoptimizer, cotengra_optimize_from_path, cotengra_optimized_greedy, cotengra_sa_tree, cotengra_tree_tempering
 };
 
 #[test]
@@ -394,4 +393,40 @@ fn stress_test() {
     let contraction_path = cotengra_greedy(&inputs, outputs, size_dict).unwrap();
 
     assert_eq!(contraction_path, vec![(0, 1)])
+}
+
+
+#[test]
+fn test_hyper() {
+    // pyo3::prepare_freethreaded_python();
+    let inputs = [
+        vec![String::from("0")],
+        vec![String::from("51")],
+        vec![String::from("0"), String::from("2")],
+        vec![
+            String::from("2"),
+            String::from("51"),
+            String::from("3"),
+            String::from("4"),
+        ],
+        vec![String::from("3")],
+        vec![String::from("4")],
+    ];
+    let outputs = vec![];
+
+    let size_dict = FxHashMap::from_iter([
+        (String::from("51"), 2),
+        (String::from("2"), 2),
+        (String::from("3"), 2),
+        (String::from("4"), 2),
+        (String::from("0"), 2),
+    ]);
+
+    let contraction_path =
+        cotengra_hyperoptimizer(&inputs, outputs, size_dict, "kahypar".to_string(), 15, None).unwrap();
+
+    assert_eq!(
+        contraction_path,
+        vec![(1, 3), (4, 1), (5, 4), (0, 2), (5, 0)]
+    )
 }

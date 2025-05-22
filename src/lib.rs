@@ -192,7 +192,7 @@ pub fn cotengra_sa_tree(
             if let Some(steps) = steps {
                 kwargs.set_item("tsteps", steps)?;
             }
-    
+
             if let Some(iter) = iter {
                 kwargs.set_item("numiter", iter)?;
             }
@@ -273,8 +273,40 @@ pub fn cotengra_tree_tempering(
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))
 }
 
+pub fn cotengra_hyperoptimizer(
+    inputs: &[Vec<String>],
+    outputs: Vec<String>,
+    size_dict: FxHashMap<String, u64>,
+    method: String,
+    max_time: i32,
+    seed: Option<u64>,
+) -> PyResult<Vec<(usize, usize)>> {
+    pyo3::prepare_freethreaded_python();
+    let contraction_path: Vec<(usize, usize)> = Python::with_gil(|py| {
+        let cotengra = PyModule::import(py, "cotengra")?;
+
+        let args = (inputs, outputs, size_dict).into_pyobject(py)?;
+
+        let kwargs = PyDict::new(py);
+        if let Some(seed) = seed {
+            kwargs.set_item("seed", seed)?;
+        }
+        kwargs.set_item("methods", method)?;
+        kwargs.set_item("max_time", max_time)?;
+        kwargs.set_item("parallel", true)?;
+
+        let opt = cotengra.call_method("HyperOptimizer", (), Some(&kwargs))?;
+
+        opt.call_method1("search", args)?
+            .call_method0("get_ssa_path")?
+            .extract()
+    })?;
+
+    Ok(ssa_to_replace_path(contraction_path, inputs.len()))
+}
+
 /// Converts path from SSA to replace path format.
-/// 
+///
 /// # Example
 /// ```
 /// # use rustengra::ssa_to_replace_path;
