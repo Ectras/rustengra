@@ -278,7 +278,8 @@ pub fn cotengra_hyperoptimizer(
     outputs: Vec<String>,
     size_dict: FxHashMap<String, u64>,
     method: String,
-    max_time: i32,
+    patience: usize,
+    max_time: usize,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
     pyo3::prepare_freethreaded_python();

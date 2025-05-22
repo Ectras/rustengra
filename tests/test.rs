@@ -423,7 +423,7 @@ fn test_hyper() {
     ]);
 
     let contraction_path =
-        cotengra_hyperoptimizer(&inputs, outputs, size_dict, "kahypar".to_string(), 15, None).unwrap();
+        cotengra_hyperoptimizer(&inputs, outputs, size_dict, "kahypar".to_string(), 150, 15, None).unwrap();
 
     assert_eq!(
         contraction_path,
