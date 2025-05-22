@@ -278,8 +278,8 @@ pub fn cotengra_hyperoptimizer(
     outputs: Vec<String>,
     size_dict: FxHashMap<String, u64>,
     method: String,
-    patience: usize,
-    max_time: usize,
+    patience: Option<usize>,
+    max_time: std::time::Duration,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
     pyo3::prepare_freethreaded_python();
@@ -292,8 +292,14 @@ pub fn cotengra_hyperoptimizer(
         if let Some(seed) = seed {
             kwargs.set_item("seed", seed)?;
         }
+        
+        if let Some(patience) = patience {
+            kwargs.set_item("max_repeats", patience)?;
+        }
+
         kwargs.set_item("methods", method)?;
-        kwargs.set_item("max_time", max_time)?;
+        kwargs.set_item("max_time", max_time.as_secs())?;
+        
         kwargs.set_item("parallel", true)?;
 
         let opt = cotengra.call_method("HyperOptimizer", (), Some(&kwargs))?;
