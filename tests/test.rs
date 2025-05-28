@@ -424,7 +424,7 @@ fn test_hyper() {
 
     let duration = std::time::Duration::new(15,0);
     let contraction_path =
-        cotengra_hyperoptimizer(&inputs, outputs, size_dict, "kahypar".to_string(), None, duration, None).unwrap();
+        cotengra_hyperoptimizer(&inputs, outputs, size_dict, "kahypar".to_string(), None, duration).unwrap();
 
     assert_eq!(
         contraction_path,
