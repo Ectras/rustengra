@@ -296,7 +296,7 @@ pub fn cotengra_hyperoptimizer(
         kwargs.set_item("methods", method)?;
         kwargs.set_item("max_time", max_time.as_secs())?;
         
-        kwargs.set_item("parallel", true)?;
+        kwargs.set_item("parallel", false)?;
 
         let opt = cotengra.call_method("HyperOptimizer", (), Some(&kwargs))?;
 
