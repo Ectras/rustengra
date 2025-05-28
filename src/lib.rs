@@ -280,7 +280,6 @@ pub fn cotengra_hyperoptimizer(
     method: String,
     patience: Option<usize>,
     max_time: std::time::Duration,
-    seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
     pyo3::prepare_freethreaded_python();
     let contraction_path: Vec<(usize, usize)> = Python::with_gil(|py| {
@@ -289,9 +288,6 @@ pub fn cotengra_hyperoptimizer(
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;
 
         let kwargs = PyDict::new(py);
-        if let Some(seed) = seed {
-            kwargs.set_item("seed", seed)?;
-        }
         
         if let Some(patience) = patience {
             kwargs.set_item("max_repeats", patience)?;
