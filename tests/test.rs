@@ -1,6 +1,7 @@
 use rustc_hash::FxHashMap;
 use rustengra::{
-    cotengra_greedy, cotengra_hyperoptimizer, cotengra_optimize_from_path, cotengra_optimized_greedy, cotengra_sa_tree, cotengra_tree_tempering
+    cotengra_greedy, cotengra_hyperoptimizer, cotengra_optimize_from_path,
+    cotengra_optimized_greedy, cotengra_sa_tree, cotengra_tree_tempering,
 };
 
 #[test]
@@ -395,7 +396,6 @@ fn stress_test() {
     assert_eq!(contraction_path, vec![(0, 1)])
 }
 
-
 #[test]
 fn test_hyper() {
     // pyo3::prepare_freethreaded_python();
@@ -422,12 +422,127 @@ fn test_hyper() {
         (String::from("0"), 2),
     ]);
 
-    let duration = std::time::Duration::new(15,0);
-    let contraction_path =
-        cotengra_hyperoptimizer(&inputs, outputs, size_dict, "kahypar".to_string(), None, duration).unwrap();
+    let duration = std::time::Duration::new(15, 0);
+    let contraction_path = cotengra_hyperoptimizer(
+        &inputs,
+        outputs,
+        size_dict,
+        "kahypar".to_string(),
+        None,
+        duration,
+    )
+    .unwrap();
 
     assert_eq!(
         contraction_path,
         vec![(1, 3), (4, 1), (5, 4), (0, 2), (5, 0)]
+    )
+}
+
+#[test]
+fn test_stress_hyper() {
+    // pyo3::prepare_freethreaded_python();
+
+    let inputs = [
+        vec![String::from("0")],
+        vec![String::from("1")],
+        vec![String::from("2")],
+        vec![String::from("3")],
+        vec![String::from("4")],
+        vec![String::from("5")],
+        vec![String::from("6")],
+        vec![String::from("7")],
+        vec![String::from("8")],
+        vec![String::from("9")],
+        vec![String::from("10"), String::from("0")],
+        vec![String::from("11"), String::from("1")],
+        vec![String::from("12"), String::from("2")],
+        vec![String::from("13"), String::from("3")],
+        vec![String::from("14"), String::from("4")],
+        vec![String::from("15"), String::from("5")],
+        vec![String::from("16"), String::from("6")],
+        vec![String::from("17"), String::from("7")],
+        vec![String::from("18"), String::from("8")],
+        vec![String::from("19"), String::from("9")],
+        vec![String::from("11")],
+        vec![String::from("18")],
+        vec![String::from("14")],
+        vec![String::from("10")],
+        vec![String::from("17")],
+        vec![String::from("13")],
+        vec![String::from("16")],
+        vec![String::from("12")],
+        vec![String::from("19")],
+        vec![String::from("15")],
+    ];
+    let outputs = vec![];
+
+    let size_dict = FxHashMap::from_iter([
+        (String::from("0"), 2),
+        (String::from("1"), 2),
+        (String::from("2"), 2),
+        (String::from("3"), 2),
+        (String::from("4"), 2),
+        (String::from("5"), 2),
+        (String::from("6"), 2),
+        (String::from("7"), 2),
+        (String::from("8"), 2),
+        (String::from("9"), 2),
+        (String::from("10"), 2),
+        (String::from("11"), 2),
+        (String::from("12"), 2),
+        (String::from("13"), 2),
+        (String::from("14"), 2),
+        (String::from("15"), 2),
+        (String::from("16"), 2),
+        (String::from("17"), 2),
+        (String::from("18"), 2),
+        (String::from("19"), 2),
+    ]);
+
+    let duration = std::time::Duration::new(15, 0);
+    let contraction_path = cotengra_hyperoptimizer(
+        &inputs,
+        outputs,
+        size_dict,
+        "kahypar".to_string(),
+        None,
+        duration,
+    )
+    .unwrap();
+
+    assert_eq!(
+        contraction_path,
+        vec![
+            (0, 10),
+            (23, 0),
+            (1, 11),
+            (20, 1),
+            (23, 20),
+            (2, 12),
+            (27, 2),
+            (3, 13),
+            (25, 3),
+            (27, 25),
+            (23, 27),
+            (8, 18),
+            (21, 8),
+            (9, 19),
+            (28, 9),
+            (21, 28),
+            (23, 21),
+            (4, 14),
+            (22, 4),
+            (5, 15),
+            (29, 5),
+            (22, 29),
+            (6, 16),
+            (26, 6),
+            (7, 17),
+            (24, 7),
+            (26, 24),
+            (22, 26),
+            (23, 22)
+        ]
     )
 }

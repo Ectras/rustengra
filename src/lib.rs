@@ -288,15 +288,14 @@ pub fn cotengra_hyperoptimizer(
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;
 
         let kwargs = PyDict::new(py);
-        
+
         if let Some(patience) = patience {
             kwargs.set_item("max_repeats", patience)?;
         }
+        kwargs.set_item("on_trial_error", String::from("raise"))?;
 
         kwargs.set_item("methods", method)?;
         kwargs.set_item("max_time", max_time.as_secs())?;
-        
-        kwargs.set_item("parallel", false)?;
 
         let opt = cotengra.call_method("HyperOptimizer", (), Some(&kwargs))?;
 
@@ -369,10 +368,10 @@ mod tests {
 
     #[test]
     fn test_tensor_inputs_to_string() {
-        let inputs = vec![vec![0, 1, 3, 2], vec![5, 4, 3, 2], vec![5, 4, 6, 7]];
+        let inputs = vec![vec![1505, 1, 3, 2], vec![5, 4, 3, 2], vec![5, 4, 6, 7]];
         let outputs = vec![6, 7];
         let size_dict = FxHashMap::from_iter([
-            (0, 4),
+            (1505, 4),
             (1, 5),
             (2, 6),
             (3, 7),
@@ -388,7 +387,7 @@ mod tests {
         assert_eq!(
             new_inputs,
             vec![
-                vec!["0", "1", "3", "2"],
+                vec!["1505", "1", "3", "2"],
                 vec!["5", "4", "3", "2"],
                 vec!["5", "4", "6", "7"]
             ]
@@ -397,7 +396,7 @@ mod tests {
         assert_eq!(
             new_size_dict,
             FxHashMap::from_iter([
-                (String::from("0"), 4),
+                (String::from("1505"), 4),
                 (String::from("1"), 5),
                 (String::from("2"), 6),
                 (String::from("3"), 7),
