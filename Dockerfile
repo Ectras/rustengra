@@ -19,8 +19,7 @@ RUN \
     apt-get install -y python3.12 python3.12-dev python3.12-venv && \
     # 5. Install python packages
     python3.12 -m venv /root/cotengra_python && \
-    pip install cotengra && \
-    pip install --index-url https://pypi.org/simple/ --no-deps kahypar && \
+    pip install cotengra kahypar && \
     # 6. Install dependencies for the project
     apt-get install -y build-essential && \
     # 7. Clear intermediate files
