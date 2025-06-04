@@ -439,10 +439,24 @@ fn test_hyper() {
     )
 }
 
+fn validate_path(path: &[(usize, usize)]) -> bool {
+    let mut contracted = Vec::<usize>::new();
+    for (u, v) in path {
+        assert!(
+            !contracted.contains(u),
+            "Contracting already contracted tensors: {u:?}, path: {path:?}"
+        );
+        contracted.push(*v);
+    }
+    true
+}
+
+/// Test to check if Hyperoptimization object runs in Rustengra.
+/// Due to the inherently non-deterministic nature and the short
+/// run-time, this does not return a fixed contraction path.
+/// Thus, we only check for validity of the returned path.
 #[test]
 fn test_stress_hyper() {
-    // pyo3::prepare_freethreaded_python();
-
     let inputs = [
         vec![String::from("0")],
         vec![String::from("1")],
@@ -511,38 +525,5 @@ fn test_stress_hyper() {
     )
     .unwrap();
 
-    assert_eq!(
-        contraction_path,
-        vec![
-            (0, 10),
-            (23, 0),
-            (1, 11),
-            (20, 1),
-            (23, 20),
-            (2, 12),
-            (27, 2),
-            (3, 13),
-            (25, 3),
-            (27, 25),
-            (23, 27),
-            (8, 18),
-            (21, 8),
-            (9, 19),
-            (28, 9),
-            (21, 28),
-            (23, 21),
-            (4, 14),
-            (22, 4),
-            (5, 15),
-            (29, 5),
-            (22, 29),
-            (6, 16),
-            (26, 6),
-            (7, 17),
-            (24, 7),
-            (26, 24),
-            (22, 26),
-            (23, 22)
-        ]
-    )
+    assert!(validate_path(&contraction_path))
 }
