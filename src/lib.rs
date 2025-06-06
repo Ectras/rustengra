@@ -293,12 +293,10 @@ pub fn cotengra_hyperoptimizer(
             kwargs.set_item("max_repeats", patience)?;
         }
         kwargs.set_item("on_trial_error", String::from("raise"))?;
-
         kwargs.set_item("methods", method)?;
         kwargs.set_item("max_time", max_time.as_secs())?;
 
         let opt = cotengra.call_method("HyperOptimizer", (), Some(&kwargs))?;
-
         opt.call_method1("search", args)?
             .call_method0("get_ssa_path")?
             .extract()
