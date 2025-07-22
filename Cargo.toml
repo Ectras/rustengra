@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-pyo3 = "0.24.2"
+pyo3 = "0.25.1"
 rustc-hash = "2.1.1"
