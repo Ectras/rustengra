@@ -13,8 +13,8 @@ use rustc_hash::FxHashMap;
 /// assert!(cotengra_check().is_ok());
 /// ```
 pub fn cotengra_check() -> PyResult<()> {
-    pyo3::prepare_freethreaded_python();
-    Python::with_gil(|py| PyModule::import(py, "cotengra").map(|_| ()))
+    Python::initialize();
+    Python::attach(|py| PyModule::import(py, "cotengra").map(|_| ()))
 }
 
 /// Converts tensor leg inputs (as usize) to chars. Creates new inputs, outputs and size_dict that can be fed to Cotengra.
@@ -56,8 +56,8 @@ pub fn cotengra_optimize_from_path(
     subtree_size: usize,
     is_ssa: bool,
 ) -> PyResult<Vec<(usize, usize)>> {
-    pyo3::prepare_freethreaded_python();
-    let contraction_path: Vec<(usize, usize)> = Python::with_gil(|py| {
+    Python::initialize();
+    let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
         let cotengra = PyModule::import(py, "cotengra")?;
 
         let kwargs = PyDict::new(py);
@@ -100,8 +100,8 @@ pub fn cotengra_greedy(
     outputs: Vec<String>,
     size_dict: FxHashMap<String, u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
-    pyo3::prepare_freethreaded_python();
-    let contraction_path: Vec<(usize, usize)> = Python::with_gil(|py| {
+    Python::initialize();
+    let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
         let cotengra = PyModule::import(py, "cotengra")?;
 
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;
@@ -132,8 +132,8 @@ pub fn cotengra_optimized_greedy(
     size_dict: FxHashMap<String, u64>,
     subtree_size: usize,
 ) -> PyResult<Vec<(usize, usize)>> {
-    pyo3::prepare_freethreaded_python();
-    let contraction_path: Vec<(usize, usize)> = Python::with_gil(|py| {
+    Python::initialize();
+    let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
         let cotengra = PyModule::import(py, "cotengra")?;
 
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;
@@ -171,8 +171,8 @@ pub fn cotengra_sa_tree(
     size_dict: FxHashMap<String, u64>,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
-    pyo3::prepare_freethreaded_python();
-    let contraction_path: Vec<(usize, usize)> = Python::with_gil(|py| {
+    Python::initialize();
+    let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
         let cotengra = PyModule::import(py, "cotengra")?;
 
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;
@@ -231,8 +231,8 @@ pub fn cotengra_tree_tempering(
     size_dict: FxHashMap<String, u64>,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
-    pyo3::prepare_freethreaded_python();
-    let contraction_path: Vec<(usize, usize)> = Python::with_gil(|py| {
+    Python::initialize();
+    let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
         let cotengra = PyModule::import(py, "cotengra")?;
 
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;
@@ -281,8 +281,8 @@ pub fn cotengra_hyperoptimizer(
     patience: Option<usize>,
     max_time: std::time::Duration,
 ) -> PyResult<Vec<(usize, usize)>> {
-    pyo3::prepare_freethreaded_python();
-    let contraction_path: Vec<(usize, usize)> = Python::with_gil(|py| {
+    Python::initialize();
+    let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
         let cotengra = PyModule::import(py, "cotengra")?;
 
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;
