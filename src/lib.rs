@@ -91,37 +91,6 @@ pub fn cotengra_optimize_from_path(
 /// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
 ///
 /// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size_dict that
-/// maps from `char` to u64,
-/// Creates a ContractionTree in Cotengra by a Greedy method.
-/// Returns a PyResult of the Greedy tree converted to a replace_path.
-/// If input !`is_ssa` converts input to an SSA path.
-pub fn cotengra_greedy(
-    inputs: &[Vec<String>],
-    outputs: Vec<String>,
-    size_dict: FxHashMap<String, u64>,
-) -> PyResult<Vec<(usize, usize)>> {
-    Python::initialize();
-    let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
-        let cotengra = PyModule::import(py, "cotengra")?;
-
-        let args = (inputs, outputs, size_dict).into_pyobject(py)?;
-
-        let kwargs = PyDict::new(py);
-        kwargs.set_item("optimize", String::from("greedy"))?;
-
-        cotengra
-            .getattr("array_contract_tree")?
-            .call(args, Some(&kwargs))?
-            .call_method0("get_ssa_path")?
-            .extract()
-    })?;
-
-    Ok(ssa_to_replace_path(contraction_path, inputs.len()))
-}
-
-/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
-///
-/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size_dict that
 /// maps from `char` to u64 and a subtree size for optimization.
 /// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it.
 /// Returns a PyResult of the optimized tree converted to a replace_path.
