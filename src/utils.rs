@@ -80,3 +80,50 @@ pub fn replace_to_ssa_path(
     }
     replace_path
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_tensor_inputs_to_string() {
+        let inputs = vec![vec![1505, 1, 3, 2], vec![5, 4, 3, 2], vec![5, 4, 6, 7]];
+        let outputs = vec![6, 7];
+        let size_dict = FxHashMap::from_iter([
+            (1505, 4),
+            (1, 5),
+            (2, 6),
+            (3, 7),
+            (4, 8),
+            (5, 9),
+            (6, 10),
+            (7, 11),
+        ]);
+
+        let (new_inputs, new_outputs, new_size_dict) =
+            tensor_legs_to_digit(&inputs, &outputs, &size_dict);
+
+        assert_eq!(
+            new_inputs,
+            vec![
+                vec!["1505", "1", "3", "2"],
+                vec!["5", "4", "3", "2"],
+                vec!["5", "4", "6", "7"]
+            ]
+        );
+        assert_eq!(new_outputs, vec!["6", "7"]);
+        assert_eq!(
+            new_size_dict,
+            FxHashMap::from_iter([
+                (String::from("1505"), 4),
+                (String::from("1"), 5),
+                (String::from("2"), 6),
+                (String::from("3"), 7),
+                (String::from("4"), 8),
+                (String::from("5"), 9),
+                (String::from("6"), 10),
+                (String::from("7"), 11),
+            ])
+        );
+    }
+}
