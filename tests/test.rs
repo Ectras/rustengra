@@ -43,7 +43,7 @@ fn integration_test() {
     assert_eq!(
         contraction_path,
         vec![(4, 5), (1, 4), (3, 1), (0, 2), (3, 0)]
-    )
+    );
 }
 
 #[test]
@@ -76,7 +76,7 @@ fn optimized_greedy_integration_test() {
     assert_eq!(
         contraction_path,
         vec![(0, 2), (3, 0), (4, 3), (5, 4), (1, 5)]
-    )
+    );
 }
 
 #[test]
@@ -111,7 +111,7 @@ fn sa_integration_test() {
     assert_eq!(
         contraction_path,
         vec![(4, 5), (3, 4), (1, 3), (2, 1), (0, 2)]
-    )
+    );
 }
 
 #[test]
@@ -146,7 +146,7 @@ fn tempering_integration_test() {
     assert_eq!(
         contraction_path,
         vec![(1, 5), (3, 1), (4, 3), (2, 4), (0, 2)]
-    )
+    );
 }
 
 #[test]
@@ -189,7 +189,7 @@ fn test_hyper() {
     assert_eq!(
         contraction_path,
         vec![(1, 3), (4, 1), (5, 4), (0, 2), (5, 0)]
-    )
+    );
 }
 
 fn validate_path(path: &[(usize, usize)]) -> bool {
@@ -278,5 +278,5 @@ fn test_stress_hyper() {
     )
     .unwrap();
 
-    assert!(validate_path(&contraction_path))
+    assert!(validate_path(&contraction_path));
 }

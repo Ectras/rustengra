@@ -36,7 +36,7 @@ pub fn tensor_legs_to_digit(
     }
     (
         new_inputs,
-        outputs.iter().map(|digit| digit.to_string()).collect(),
+        outputs.iter().map(ToString::to_string).collect(),
         new_size_dict,
     )
 }
@@ -63,10 +63,10 @@ pub fn cotengra_optimize_from_path(
         let kwargs = PyDict::new(py);
         kwargs.set_item("size_dict", size_dict)?;
 
-        let path = if !is_ssa {
-            replace_to_ssa_path(path, inputs.len())
-        } else {
+        let path = if is_ssa {
             path
+        } else {
+            replace_to_ssa_path(path, inputs.len())
         };
 
         kwargs.set_item("ssa_path", path)?;
@@ -289,7 +289,7 @@ pub fn ssa_to_replace_path(
 ) -> Vec<(usize, usize)> {
     let mut next_id = tensor_len;
     let mut id_update = HashMap::new();
-    for (i, j) in ssa_path.iter_mut() {
+    for (i, j) in &mut ssa_path {
         let left_id = *id_update.get(i).unwrap_or(i);
         let right_id = *id_update.get(j).unwrap_or(j);
 
@@ -317,7 +317,7 @@ pub fn replace_to_ssa_path(
 ) -> Vec<(usize, usize)> {
     let mut next_id = tensor_len;
     let mut id_update = HashMap::new();
-    for (i, j) in replace_path.iter_mut() {
+    for (i, j) in &mut replace_path {
         let left_id = *id_update.get(i).unwrap_or(i);
         let right_id = *id_update.get(j).unwrap_or(j);
 
