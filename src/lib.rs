@@ -2,7 +2,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
-use crate::utils::{replace_to_ssa_path, ssa_to_replace_path};
+use crate::utils::replace_to_ssa_path;
 
 pub mod hyper;
 pub mod utils;
@@ -24,7 +24,7 @@ pub fn cotengra_check() -> PyResult<()> {
 /// Accepts inputs as `iterable[iterable[str]]`, output as `iterable[str]`, a size dict as `dict[str, int]`,
 /// a starting path as `vec![(usize, usize)]`, the subtree size for optimization as `u64` and `is_ssa` as bool.
 /// Creates a `ContractionTree` in Cotengra and calls `subtree_reconfigure` to find an improved
-/// Contraction. Returns a `PyResult` of the best new Contraction path converted to a `replace_path`.
+/// Contraction. Returns a `PyResult` of the best new contraction path in SSA format.
 /// If input !`is_ssa` converts it to an SSA path.
 pub fn cotengra_optimize_from_path(
     inputs: &[Vec<String>],
@@ -63,16 +63,17 @@ pub fn cotengra_optimize_from_path(
             .extract()
     })?;
 
-    Ok(ssa_to_replace_path(contraction_path, inputs.len()))
+    Ok(contraction_path)
 }
 
-/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
+/// Accepts tensor network information and returns an optimized ContractionTree via
+/// Cotengra.
 ///
-/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size_dict that
-/// maps from `char` to u64 and a subtree size for optimization.
-/// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it.
-/// Returns a PyResult of the optimized tree converted to a replace_path.
-/// If input !`is_ssa` converts input to an SSA path.
+/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a
+/// `size_dict` that maps from `char` to `u64` and a subtree size for optimization.
+/// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it with
+/// subtree reconfiguration. Returns a PyResult of the optimized tree converted to a
+/// SSA path.
 pub fn cotengra_optimized_greedy(
     inputs: &[Vec<String>],
     outputs: &[String],
@@ -100,16 +101,17 @@ pub fn cotengra_optimized_greedy(
             .extract()
     })?;
 
-    Ok(ssa_to_replace_path(contraction_path, inputs.len()))
+    Ok(contraction_path)
 }
 
-/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
+/// Accepts tensor network information and returns an optimized ContractionTree via
+/// Cotengra.
 ///
-/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size_dict that
-/// maps from `char` to u64 and a subtree size for optimization.
-/// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it.
-/// Returns a PyResult of the optimized tree converted to a replace_path.
-/// If input !`is_ssa` converts input to an SSA path.
+/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a
+/// `size_dict` that maps from `char` to `u64` and a subtree size for optimization.
+/// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it with
+/// simualted annealing. Returns a PyResult of the optimized tree converted to a
+/// SSA path.
 pub fn cotengra_sa_tree(
     inputs: &[Vec<String>],
     outputs: &[String],
@@ -161,16 +163,17 @@ pub fn cotengra_sa_tree(
         }
     })?;
 
-    Ok(ssa_to_replace_path(contraction_path, inputs.len()))
+    Ok(contraction_path)
 }
 
-/// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
+/// Accepts tensor network information and returns an optimized ContractionTree via
+/// Cotengra.
 ///
-/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size_dict that
-/// maps from `char` to u64 and a subtree size for optimization.
-/// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it.
-/// Returns a PyResult of the optimized tree converted to a replace_path.
-/// If input !`is_ssa` converts input to an SSA path.
+/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a
+/// `size_dict` that maps from `char` to `u64` and a subtree size for optimization.
+/// Creates a ContractionTree in Cotengra by simulated annealing and optimizes it
+/// using tree tempering. Returns a PyResult of the optimized tree converted to a SSA
+/// path.
 pub fn cotengra_tree_tempering(
     inputs: &[Vec<String>],
     outputs: &[String],
@@ -217,5 +220,5 @@ pub fn cotengra_tree_tempering(
         }
     })?;
 
-    Ok(ssa_to_replace_path(contraction_path, inputs.len()))
+    Ok(contraction_path)
 }

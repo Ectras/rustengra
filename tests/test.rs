@@ -9,7 +9,6 @@ use rustengra::{
 
 #[test]
 fn integration_test() {
-    // pyo3::prepare_freethreaded_python();
     let inputs = [
         vec![String::from("a"), String::from("8"), String::from("9")],
         vec![String::from("5"), String::from("1"), String::from("0")],
@@ -45,13 +44,12 @@ fn integration_test() {
         cotengra_optimize_from_path(&inputs, outputs, &size_dict, ssa_path, 8, true).unwrap();
     assert_eq!(
         contraction_path,
-        vec![(4, 5), (1, 4), (3, 1), (0, 2), (3, 0)]
+        vec![(4, 5), (1, 6), (3, 7), (0, 2), (8, 9)]
     );
 }
 
 #[test]
 fn optimized_greedy_integration_test() {
-    // pyo3::prepare_freethreaded_python();
     let inputs = [
         vec![String::from("0")],
         vec![String::from("51")],
@@ -78,13 +76,12 @@ fn optimized_greedy_integration_test() {
     let contraction_path = cotengra_optimized_greedy(&inputs, outputs, &size_dict, 8).unwrap();
     assert_eq!(
         contraction_path,
-        vec![(0, 2), (3, 0), (4, 3), (5, 4), (1, 5)]
+        vec![(0, 2), (3, 6), (4, 7), (5, 8), (1, 9)]
     );
 }
 
 #[test]
 fn sa_integration_test() {
-    // pyo3::prepare_freethreaded_python();
     let inputs = [
         vec![String::from("0")],
         vec![String::from("51")],
@@ -113,13 +110,12 @@ fn sa_integration_test() {
 
     assert_eq!(
         contraction_path,
-        vec![(4, 5), (3, 4), (1, 3), (2, 1), (0, 2)]
+        vec![(4, 5), (3, 6), (1, 7), (2, 8), (0, 9)]
     );
 }
 
 #[test]
 fn tempering_integration_test() {
-    // pyo3::prepare_freethreaded_python();
     let inputs = [
         vec![String::from("0")],
         vec![String::from("51")],
@@ -148,13 +144,12 @@ fn tempering_integration_test() {
 
     assert_eq!(
         contraction_path,
-        vec![(1, 5), (3, 1), (4, 3), (2, 4), (0, 2)]
+        vec![(1, 5), (3, 6), (4, 7), (2, 8), (0, 9)]
     );
 }
 
 #[test]
 fn test_hyper() {
-    // pyo3::prepare_freethreaded_python();
     let inputs = [
         vec![String::from("0")],
         vec![String::from("51")],
