@@ -20,7 +20,7 @@ fn integration_test() {
         ],
         vec![String::from("4"), String::from("3"), String::from("2")],
     ];
-    let outputs = vec![String::from("a"), String::from("6")];
+    let outputs = &[String::from("a"), String::from("6")];
 
     let size_dict = FxHashMap::from_iter([
         (String::from("1"), 2),
@@ -62,7 +62,7 @@ fn optimized_greedy_integration_test() {
         vec![String::from("3")],
         vec![String::from("4")],
     ];
-    let outputs = vec![];
+    let outputs = &[];
 
     let size_dict = FxHashMap::from_iter([
         (String::from("51"), 2),
@@ -95,7 +95,7 @@ fn sa_integration_test() {
         vec![String::from("3")],
         vec![String::from("4")],
     ];
-    let outputs = vec![];
+    let outputs = &[];
 
     let size_dict = FxHashMap::from_iter([
         (String::from("51"), 2),
@@ -130,7 +130,7 @@ fn tempering_integration_test() {
         vec![String::from("3")],
         vec![String::from("4")],
     ];
-    let outputs = vec![];
+    let outputs = &[];
 
     let size_dict = FxHashMap::from_iter([
         (String::from("51"), 2),
@@ -165,7 +165,7 @@ fn test_hyper() {
         vec![String::from("3")],
         vec![String::from("4")],
     ];
-    let outputs = vec![];
+    let outputs = &[];
 
     let size_dict = FxHashMap::from_iter([
         (String::from("51"), 2),
@@ -242,7 +242,7 @@ fn test_stress_hyper() {
         vec![String::from("19")],
         vec![String::from("15")],
     ];
-    let outputs = vec![];
+    let outputs = &[];
 
     let size_dict = FxHashMap::from_iter([
         (String::from("0"), 2),

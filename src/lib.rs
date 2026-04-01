@@ -1,4 +1,3 @@
-use std::collections::HashMap;
 use std::iter::zip;
 
 use pyo3::prelude::*;
@@ -50,7 +49,7 @@ pub fn tensor_legs_to_digit(
 /// If input !`is_ssa` converts it to an SSA path.
 pub fn cotengra_optimize_from_path(
     inputs: &[Vec<String>],
-    outputs: Vec<String>,
+    outputs: &[String],
     size_dict: FxHashMap<String, u64>,
     path: Vec<(usize, usize)>,
     subtree_size: usize,
@@ -97,7 +96,7 @@ pub fn cotengra_optimize_from_path(
 /// If input !`is_ssa` converts input to an SSA path.
 pub fn cotengra_optimized_greedy(
     inputs: &[Vec<String>],
-    outputs: Vec<String>,
+    outputs: &[String],
     size_dict: FxHashMap<String, u64>,
     subtree_size: usize,
 ) -> PyResult<Vec<(usize, usize)>> {
@@ -134,7 +133,7 @@ pub fn cotengra_optimized_greedy(
 /// If input !`is_ssa` converts input to an SSA path.
 pub fn cotengra_sa_tree(
     inputs: &[Vec<String>],
-    outputs: Vec<String>,
+    outputs: &[String],
     steps: Option<usize>,
     iter: Option<usize>,
     size_dict: FxHashMap<String, u64>,
@@ -195,7 +194,7 @@ pub fn cotengra_sa_tree(
 /// If input !`is_ssa` converts input to an SSA path.
 pub fn cotengra_tree_tempering(
     inputs: &[Vec<String>],
-    outputs: Vec<String>,
+    outputs: &[String],
     iter: Option<usize>,
     size_dict: FxHashMap<String, u64>,
     seed: Option<u64>,
@@ -244,7 +243,7 @@ pub fn cotengra_tree_tempering(
 
 pub fn cotengra_hyperoptimizer(
     inputs: &[Vec<String>],
-    outputs: Vec<String>,
+    outputs: &[String],
     size_dict: FxHashMap<String, u64>,
     method: String,
     patience: Option<usize>,
@@ -274,7 +273,7 @@ pub fn cotengra_hyperoptimizer(
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))
 }
 
-/// Converts path from SSA to replace path format.
+/// Converts path from SSA to replace left path format.
 ///
 /// # Example
 /// ```
@@ -288,7 +287,7 @@ pub fn ssa_to_replace_path(
     tensor_len: usize,
 ) -> Vec<(usize, usize)> {
     let mut next_id = tensor_len;
-    let mut id_update = HashMap::new();
+    let mut id_update = FxHashMap::default();
     for (i, j) in &mut ssa_path {
         let left_id = *id_update.get(i).unwrap_or(i);
         let right_id = *id_update.get(j).unwrap_or(j);
@@ -301,7 +300,7 @@ pub fn ssa_to_replace_path(
     ssa_path
 }
 
-/// Converts path from replace path to SSA path format.
+/// Converts path from replace left path format to SSA path format.
 ///
 /// # Example
 /// ```
@@ -316,7 +315,7 @@ pub fn replace_to_ssa_path(
     tensor_len: usize,
 ) -> Vec<(usize, usize)> {
     let mut next_id = tensor_len;
-    let mut id_update = HashMap::new();
+    let mut id_update = FxHashMap::default();
     for (i, j) in &mut replace_path {
         let left_id = *id_update.get(i).unwrap_or(i);
         let right_id = *id_update.get(j).unwrap_or(j);
