@@ -52,8 +52,8 @@ impl HyperOptions {
 pub fn cotengra_hyperoptimizer(
     inputs: &[Vec<String>],
     outputs: &[String],
-    size_dict: FxHashMap<String, u64>,
-    method: String,
+    size_dict: &FxHashMap<String, u64>,
+    method: &str,
     options: &HyperOptions,
 ) -> PyResult<Vec<(usize, usize)>> {
     Python::initialize();

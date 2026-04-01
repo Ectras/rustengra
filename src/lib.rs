@@ -29,7 +29,7 @@ pub fn cotengra_check() -> PyResult<()> {
 pub fn cotengra_optimize_from_path(
     inputs: &[Vec<String>],
     outputs: &[String],
-    size_dict: FxHashMap<String, u64>,
+    size_dict: &FxHashMap<String, u64>,
     path: Vec<(usize, usize)>,
     subtree_size: usize,
     is_ssa: bool,
@@ -76,7 +76,7 @@ pub fn cotengra_optimize_from_path(
 pub fn cotengra_optimized_greedy(
     inputs: &[Vec<String>],
     outputs: &[String],
-    size_dict: FxHashMap<String, u64>,
+    size_dict: &FxHashMap<String, u64>,
     subtree_size: usize,
 ) -> PyResult<Vec<(usize, usize)>> {
     Python::initialize();
@@ -115,7 +115,7 @@ pub fn cotengra_sa_tree(
     outputs: &[String],
     steps: Option<usize>,
     iter: Option<usize>,
-    size_dict: FxHashMap<String, u64>,
+    size_dict: &FxHashMap<String, u64>,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
     Python::initialize();
@@ -175,7 +175,7 @@ pub fn cotengra_tree_tempering(
     inputs: &[Vec<String>],
     outputs: &[String],
     iter: Option<usize>,
-    size_dict: FxHashMap<String, u64>,
+    size_dict: &FxHashMap<String, u64>,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
     Python::initialize();

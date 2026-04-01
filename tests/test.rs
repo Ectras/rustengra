@@ -42,7 +42,7 @@ fn integration_test() {
     let ssa_path = vec![(0, 1), (6, 2), (7, 3), (8, 4), (9, 5)];
 
     let contraction_path =
-        cotengra_optimize_from_path(&inputs, outputs, size_dict, ssa_path, 8, true).unwrap();
+        cotengra_optimize_from_path(&inputs, outputs, &size_dict, ssa_path, 8, true).unwrap();
     assert_eq!(
         contraction_path,
         vec![(4, 5), (1, 4), (3, 1), (0, 2), (3, 0)]
@@ -75,7 +75,7 @@ fn optimized_greedy_integration_test() {
         (String::from("0"), 2),
     ]);
 
-    let contraction_path = cotengra_optimized_greedy(&inputs, outputs, size_dict, 8).unwrap();
+    let contraction_path = cotengra_optimized_greedy(&inputs, outputs, &size_dict, 8).unwrap();
     assert_eq!(
         contraction_path,
         vec![(0, 2), (3, 0), (4, 3), (5, 4), (1, 5)]
@@ -109,7 +109,7 @@ fn sa_integration_test() {
     ]);
 
     let contraction_path =
-        cotengra_sa_tree(&inputs, outputs, None, None, size_dict, Some(4)).unwrap();
+        cotengra_sa_tree(&inputs, outputs, None, None, &size_dict, Some(4)).unwrap();
 
     assert_eq!(
         contraction_path,
@@ -144,7 +144,7 @@ fn tempering_integration_test() {
     ]);
 
     let contraction_path =
-        cotengra_tree_tempering(&inputs, outputs, None, size_dict, Some(4)).unwrap();
+        cotengra_tree_tempering(&inputs, outputs, None, &size_dict, Some(4)).unwrap();
 
     assert_eq!(
         contraction_path,
@@ -182,8 +182,8 @@ fn test_hyper() {
     let contraction_path = cotengra_hyperoptimizer(
         &inputs,
         outputs,
-        size_dict,
-        "kahypar".to_string(),
+        &size_dict,
+        "kahypar",
         &HyperOptions::default().with_max_time(&duration),
     )
     .unwrap();
@@ -272,8 +272,8 @@ fn test_stress_hyper() {
     let contraction_path = cotengra_hyperoptimizer(
         &inputs,
         outputs,
-        size_dict,
-        "kahypar".to_string(),
+        &size_dict,
+        "kahypar",
         &HyperOptions::default().with_max_time(&duration),
     )
     .unwrap();
