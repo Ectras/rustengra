@@ -194,8 +194,8 @@ fn test_hyper() {
     );
 }
 
-fn validate_path(path: &[(usize, usize)]) -> bool {
-    let mut contracted = Vec::<usize>::new();
+fn validate_path(path: &[(usize, usize)]) {
+    let mut contracted = Vec::with_capacity(path.len());
     for (u, v) in path {
         assert!(
             !contracted.contains(u),
@@ -203,7 +203,6 @@ fn validate_path(path: &[(usize, usize)]) -> bool {
         );
         contracted.push(*v);
     }
-    true
 }
 
 /// Test to check if Hyperoptimization object runs in Rustengra.
@@ -279,5 +278,5 @@ fn test_stress_hyper() {
     )
     .unwrap();
 
-    assert!(validate_path(&contraction_path));
+    validate_path(&contraction_path);
 }
