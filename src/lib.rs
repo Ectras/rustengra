@@ -4,6 +4,7 @@ use rustc_hash::FxHashMap;
 
 use crate::utils::{replace_to_ssa_path, ssa_to_replace_path};
 
+pub mod hyper;
 pub mod utils;
 
 /// Checks if Cotengra is installed in the current environment.
@@ -214,38 +215,6 @@ pub fn cotengra_tree_tempering(
                 .call_method0("get_ssa_path")?
                 .extract()
         }
-    })?;
-
-    Ok(ssa_to_replace_path(contraction_path, inputs.len()))
-}
-
-pub fn cotengra_hyperoptimizer(
-    inputs: &[Vec<String>],
-    outputs: &[String],
-    size_dict: FxHashMap<String, u64>,
-    method: String,
-    patience: Option<usize>,
-    max_time: std::time::Duration,
-) -> PyResult<Vec<(usize, usize)>> {
-    Python::initialize();
-    let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
-        let cotengra = PyModule::import(py, "cotengra")?;
-
-        let args = (inputs, outputs, size_dict).into_pyobject(py)?;
-
-        let kwargs = PyDict::new(py);
-
-        if let Some(patience) = patience {
-            kwargs.set_item("max_repeats", patience)?;
-        }
-        kwargs.set_item("on_trial_error", String::from("raise"))?;
-        kwargs.set_item("methods", method)?;
-        kwargs.set_item("max_time", max_time.as_secs())?;
-
-        let opt = cotengra.call_method("HyperOptimizer", (), Some(&kwargs))?;
-        opt.call_method1("search", args)?
-            .call_method0("get_ssa_path")?
-            .extract()
     })?;
 
     Ok(ssa_to_replace_path(contraction_path, inputs.len()))

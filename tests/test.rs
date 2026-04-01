@@ -1,7 +1,10 @@
+use std::time::Duration;
+
 use rustc_hash::FxHashMap;
 use rustengra::{
-    cotengra_hyperoptimizer, cotengra_optimize_from_path, cotengra_optimized_greedy,
-    cotengra_sa_tree, cotengra_tree_tempering,
+    cotengra_optimize_from_path, cotengra_optimized_greedy, cotengra_sa_tree,
+    cotengra_tree_tempering,
+    hyper::{cotengra_hyperoptimizer, HyperOptions},
 };
 
 #[test]
@@ -175,14 +178,13 @@ fn test_hyper() {
         (String::from("0"), 2),
     ]);
 
-    let duration = std::time::Duration::new(15, 0);
+    let duration = Duration::from_secs(15);
     let contraction_path = cotengra_hyperoptimizer(
         &inputs,
         outputs,
         size_dict,
         "kahypar".to_string(),
-        None,
-        duration,
+        &HyperOptions::default().with_max_time(&duration),
     )
     .unwrap();
 
@@ -267,14 +269,13 @@ fn test_stress_hyper() {
         (String::from("19"), 2),
     ]);
 
-    let duration = std::time::Duration::new(15, 0);
+    let duration = Duration::from_secs(15);
     let contraction_path = cotengra_hyperoptimizer(
         &inputs,
         outputs,
         size_dict,
         "kahypar".to_string(),
-        None,
-        duration,
+        &HyperOptions::default().with_max_time(&duration),
     )
     .unwrap();
 
