@@ -19,6 +19,32 @@ pub fn cotengra_check() -> PyResult<()> {
     Python::attach(|py| PyModule::import(py, "cotengra").map(|_| ()))
 }
 
+/// Information about the used Python interpreter.
+///
+/// The fields correspond to the attributes of the Python `sys` module.
+#[derive(Debug, Clone)]
+pub struct PythonInfo {
+    pub executable: String,
+    pub version: String,
+    pub path: Vec<String>,
+}
+
+/// Obtains information about the Python interpreter being used by this lib.
+pub fn python_info() -> PyResult<PythonInfo> {
+    Python::initialize();
+    Python::attach(|py| {
+        let sys = PyModule::import(py, "sys")?;
+        let executable = sys.getattr("executable")?.extract()?;
+        let version = sys.getattr("version")?.extract()?;
+        let path = sys.getattr("path")?.extract()?;
+        Ok(PythonInfo {
+            executable,
+            version,
+            path,
+        })
+    })
+}
+
 /// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
 ///
 /// Accepts inputs as `iterable[iterable[str]]`, output as `iterable[str]`, a size dict as `dict[str, int]`,
