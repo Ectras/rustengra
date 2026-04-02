@@ -3,8 +3,6 @@ use std::time::Duration;
 use pyo3::{prelude::*, types::PyDict};
 use rustc_hash::FxHashMap;
 
-use crate::utils::ssa_to_replace_path;
-
 /// The keyword options for the cotengra Hyperoptimizer.
 ///
 /// Unassigned options will not be passed to the function and hence the Python
@@ -80,5 +78,5 @@ pub fn cotengra_hyperoptimizer(
             .extract()
     })?;
 
-    Ok(ssa_to_replace_path(contraction_path, inputs.len()))
+    Ok(contraction_path)
 }
