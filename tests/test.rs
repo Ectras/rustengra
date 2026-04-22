@@ -8,7 +8,7 @@ use rustengra::{
 };
 
 #[test]
-fn integration_test() {
+fn cotengra_optimize_from_path_test() {
     let inputs = [
         vec!['k', 'i', 'j'],
         vec!['f', 'b', 'a'],
