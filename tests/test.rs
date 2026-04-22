@@ -10,32 +10,27 @@ use rustengra::{
 #[test]
 fn integration_test() {
     let inputs = [
-        vec![String::from("a"), String::from("8"), String::from("9")],
-        vec![String::from("5"), String::from("1"), String::from("0")],
-        vec![String::from("6"), String::from("8"), String::from("9")],
-        vec![String::from("4"), String::from("5"), String::from("6")],
-        vec![
-            String::from("0"),
-            String::from("1"),
-            String::from("3"),
-            String::from("2"),
-        ],
-        vec![String::from("4"), String::from("3"), String::from("2")],
+        vec!['k', 'i', 'j'],
+        vec!['f', 'b', 'a'],
+        vec!['g', 'i', 'j'],
+        vec!['e', 'f', 'g'],
+        vec!['a', 'b', 'd', 'c'],
+        vec!['e', 'd', 'c'],
     ];
-    let outputs = &[String::from("a"), String::from("6")];
+    let outputs = &['k', 'g'];
 
     let size_dict = FxHashMap::from_iter([
-        (String::from("1"), 2),
-        (String::from("2"), 2),
-        (String::from("3"), 2),
-        (String::from("4"), 2),
-        (String::from("5"), 2),
-        (String::from("6"), 2),
-        (String::from("7"), 2),
-        (String::from("8"), 2),
-        (String::from("9"), 2),
-        (String::from("0"), 2),
-        (String::from("a"), 2),
+        ('a', 2),
+        ('b', 2),
+        ('c', 2),
+        ('d', 2),
+        ('e', 2),
+        ('f', 2),
+        ('g', 2),
+        ('h', 2),
+        ('i', 2),
+        ('j', 2),
+        ('k', 2),
     ]);
 
     let ssa_path = vec![(0, 1), (6, 2), (7, 3), (8, 4), (9, 5)];
@@ -51,27 +46,16 @@ fn integration_test() {
 #[test]
 fn optimized_greedy_integration_test() {
     let inputs = [
-        vec![String::from("0")],
-        vec![String::from("51")],
-        vec![String::from("0"), String::from("2")],
-        vec![
-            String::from("2"),
-            String::from("51"),
-            String::from("3"),
-            String::from("4"),
-        ],
-        vec![String::from("3")],
-        vec![String::from("4")],
+        vec!['a'],
+        vec!['b'],
+        vec!['a', 'c'],
+        vec!['c', 'b', 'd', 'e'],
+        vec!['d'],
+        vec!['e'],
     ];
     let outputs = &[];
 
-    let size_dict = FxHashMap::from_iter([
-        (String::from("51"), 2),
-        (String::from("2"), 2),
-        (String::from("3"), 2),
-        (String::from("4"), 2),
-        (String::from("0"), 2),
-    ]);
+    let size_dict = FxHashMap::from_iter([('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2)]);
 
     let contraction_path = cotengra_optimized_greedy(&inputs, outputs, &size_dict, 8).unwrap();
     assert_eq!(
@@ -83,27 +67,16 @@ fn optimized_greedy_integration_test() {
 #[test]
 fn sa_integration_test() {
     let inputs = [
-        vec![String::from("0")],
-        vec![String::from("51")],
-        vec![String::from("0"), String::from("2")],
-        vec![
-            String::from("2"),
-            String::from("51"),
-            String::from("3"),
-            String::from("4"),
-        ],
-        vec![String::from("3")],
-        vec![String::from("4")],
+        vec!['a'],
+        vec!['b'],
+        vec!['a', 'c'],
+        vec!['c', 'b', 'd', 'e'],
+        vec!['d'],
+        vec!['e'],
     ];
     let outputs = &[];
 
-    let size_dict = FxHashMap::from_iter([
-        (String::from("51"), 2),
-        (String::from("2"), 2),
-        (String::from("3"), 2),
-        (String::from("4"), 2),
-        (String::from("0"), 2),
-    ]);
+    let size_dict = FxHashMap::from_iter([('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2)]);
 
     let contraction_path =
         cotengra_sa_tree(&inputs, outputs, None, None, &size_dict, Some(4)).unwrap();
@@ -117,27 +90,16 @@ fn sa_integration_test() {
 #[test]
 fn tempering_integration_test() {
     let inputs = [
-        vec![String::from("0")],
-        vec![String::from("51")],
-        vec![String::from("0"), String::from("2")],
-        vec![
-            String::from("2"),
-            String::from("51"),
-            String::from("3"),
-            String::from("4"),
-        ],
-        vec![String::from("3")],
-        vec![String::from("4")],
+        vec!['a'],
+        vec!['b'],
+        vec!['a', 'c'],
+        vec!['c', 'b', 'd', 'e'],
+        vec!['d'],
+        vec!['e'],
     ];
     let outputs = &[];
 
-    let size_dict = FxHashMap::from_iter([
-        (String::from("51"), 2),
-        (String::from("2"), 2),
-        (String::from("3"), 2),
-        (String::from("4"), 2),
-        (String::from("0"), 2),
-    ]);
+    let size_dict = FxHashMap::from_iter([('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2)]);
 
     let contraction_path =
         cotengra_tree_tempering(&inputs, outputs, None, &size_dict, Some(4)).unwrap();
@@ -151,27 +113,16 @@ fn tempering_integration_test() {
 #[test]
 fn test_hyper() {
     let inputs = [
-        vec![String::from("0")],
-        vec![String::from("51")],
-        vec![String::from("0"), String::from("2")],
-        vec![
-            String::from("2"),
-            String::from("51"),
-            String::from("3"),
-            String::from("4"),
-        ],
-        vec![String::from("3")],
-        vec![String::from("4")],
+        vec!['a'],
+        vec!['b'],
+        vec!['a', 'c'],
+        vec!['c', 'b', 'd', 'e'],
+        vec!['d'],
+        vec!['e'],
     ];
     let outputs = &[];
 
-    let size_dict = FxHashMap::from_iter([
-        (String::from("51"), 2),
-        (String::from("2"), 2),
-        (String::from("3"), 2),
-        (String::from("4"), 2),
-        (String::from("0"), 2),
-    ]);
+    let size_dict = FxHashMap::from_iter([('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2)]);
 
     let contraction_path = cotengra_hyperoptimizer(
         &inputs,
@@ -208,60 +159,60 @@ fn validate_path(path: &[(usize, usize)]) {
 #[test]
 fn test_stress_hyper() {
     let inputs = [
-        vec![String::from("0")],
-        vec![String::from("1")],
-        vec![String::from("2")],
-        vec![String::from("3")],
-        vec![String::from("4")],
-        vec![String::from("5")],
-        vec![String::from("6")],
-        vec![String::from("7")],
-        vec![String::from("8")],
-        vec![String::from("9")],
-        vec![String::from("10"), String::from("0")],
-        vec![String::from("11"), String::from("1")],
-        vec![String::from("12"), String::from("2")],
-        vec![String::from("13"), String::from("3")],
-        vec![String::from("14"), String::from("4")],
-        vec![String::from("15"), String::from("5")],
-        vec![String::from("16"), String::from("6")],
-        vec![String::from("17"), String::from("7")],
-        vec![String::from("18"), String::from("8")],
-        vec![String::from("19"), String::from("9")],
-        vec![String::from("11")],
-        vec![String::from("18")],
-        vec![String::from("14")],
-        vec![String::from("10")],
-        vec![String::from("17")],
-        vec![String::from("13")],
-        vec![String::from("16")],
-        vec![String::from("12")],
-        vec![String::from("19")],
-        vec![String::from("15")],
+        vec!['a'],
+        vec!['b'],
+        vec!['c'],
+        vec!['d'],
+        vec!['e'],
+        vec!['f'],
+        vec!['g'],
+        vec!['h'],
+        vec!['i'],
+        vec!['j'],
+        vec!['k', 'a'],
+        vec!['l', 'b'],
+        vec!['m', 'c'],
+        vec!['n', 'd'],
+        vec!['o', 'e'],
+        vec!['p', 'f'],
+        vec!['q', 'g'],
+        vec!['r', 'h'],
+        vec!['s', 'i'],
+        vec!['t', 'j'],
+        vec!['l'],
+        vec!['s'],
+        vec!['o'],
+        vec!['k'],
+        vec!['r'],
+        vec!['n'],
+        vec!['q'],
+        vec!['m'],
+        vec!['t'],
+        vec!['p'],
     ];
     let outputs = &[];
 
     let size_dict = FxHashMap::from_iter([
-        (String::from("0"), 2),
-        (String::from("1"), 2),
-        (String::from("2"), 2),
-        (String::from("3"), 2),
-        (String::from("4"), 2),
-        (String::from("5"), 2),
-        (String::from("6"), 2),
-        (String::from("7"), 2),
-        (String::from("8"), 2),
-        (String::from("9"), 2),
-        (String::from("10"), 2),
-        (String::from("11"), 2),
-        (String::from("12"), 2),
-        (String::from("13"), 2),
-        (String::from("14"), 2),
-        (String::from("15"), 2),
-        (String::from("16"), 2),
-        (String::from("17"), 2),
-        (String::from("18"), 2),
-        (String::from("19"), 2),
+        ('a', 2),
+        ('b', 2),
+        ('c', 2),
+        ('d', 2),
+        ('e', 2),
+        ('f', 2),
+        ('g', 2),
+        ('h', 2),
+        ('i', 2),
+        ('j', 2),
+        ('k', 2),
+        ('l', 2),
+        ('m', 2),
+        ('n', 2),
+        ('o', 2),
+        ('p', 2),
+        ('q', 2),
+        ('r', 2),
+        ('s', 2),
+        ('t', 2),
     ]);
 
     let duration = Duration::from_secs(15);

@@ -2,26 +2,48 @@ use std::iter::zip;
 
 use rustc_hash::FxHashMap;
 
+const BASE_SYMBOLS: &'static str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+/// Get the symbol corresponding to `i` - runs through the usual 52 letters before
+/// resorting to unicode characters, starting at `chr(192)`.
+///
+/// See also <https://optimized-einsum.readthedocs.io/en/stable/autosummary/opt_einsum.parser.get_symbol.html#opt_einsum.parser.get_symbol>
+///
+/// # Examples
+/// ```
+/// # use rustengra::utils::get_symbol;
+/// assert_eq!(get_symbol(2), 'c');
+/// assert_eq!(get_symbol(200), 'Ŕ');
+/// assert_eq!(get_symbol(20000), '京');
+/// ```
+pub fn get_symbol(leg: usize) -> char {
+    if leg < BASE_SYMBOLS.len() {
+        BASE_SYMBOLS.chars().nth(leg).unwrap()
+    } else {
+        char::from_u32((leg + 140).try_into().unwrap()).unwrap()
+    }
+}
+
 /// Converts tensor leg inputs (as usize) to chars. Creates new inputs, outputs and size_dict that can be fed to Cotengra.
 pub fn tensor_legs_to_digit(
     inputs: &[Vec<usize>],
     outputs: &[usize],
     size_dict: &FxHashMap<usize, u64>,
-) -> (Vec<Vec<String>>, Vec<String>, FxHashMap<String, u64>) {
+) -> (Vec<Vec<char>>, Vec<char>, FxHashMap<char, u64>) {
     let mut new_inputs = vec![Vec::new(); inputs.len()];
     let mut new_size_dict = FxHashMap::default();
 
     for (tensor, new_tensor) in zip(inputs.iter(), new_inputs.iter_mut()) {
         new_tensor.reserve_exact(tensor.len());
         for leg in tensor {
-            let string_value = leg.to_string();
+            let string_value = get_symbol(*leg);
             new_tensor.push(string_value.clone());
             new_size_dict.insert(string_value, size_dict[leg]);
         }
     }
     (
         new_inputs,
-        outputs.iter().map(ToString::to_string).collect(),
+        outputs.iter().copied().map(get_symbol).collect(),
         new_size_dict,
     )
 }
@@ -87,17 +109,17 @@ mod tests {
 
     #[test]
     fn test_tensor_inputs_to_string() {
-        let inputs = vec![vec![1505, 1, 3, 2], vec![5, 4, 3, 2], vec![5, 4, 6, 7]];
-        let outputs = vec![6, 7];
+        let inputs = vec![vec![1505, 0, 2, 1], vec![4, 3, 2, 1], vec![4, 3, 5, 6]];
+        let outputs = vec![5, 6];
         let size_dict = FxHashMap::from_iter([
             (1505, 4),
-            (1, 5),
-            (2, 6),
-            (3, 7),
-            (4, 8),
-            (5, 9),
-            (6, 10),
-            (7, 11),
+            (0, 5),
+            (1, 6),
+            (2, 7),
+            (3, 8),
+            (4, 9),
+            (5, 10),
+            (6, 11),
         ]);
 
         let (new_inputs, new_outputs, new_size_dict) =
@@ -106,23 +128,23 @@ mod tests {
         assert_eq!(
             new_inputs,
             vec![
-                vec!["1505", "1", "3", "2"],
-                vec!["5", "4", "3", "2"],
-                vec!["5", "4", "6", "7"]
+                vec!['\u{066D}', 'a', 'c', 'b'],
+                vec!['e', 'd', 'c', 'b'],
+                vec!['e', 'd', 'f', 'g']
             ]
         );
-        assert_eq!(new_outputs, vec!["6", "7"]);
+        assert_eq!(new_outputs, vec!['f', 'g']);
         assert_eq!(
             new_size_dict,
             FxHashMap::from_iter([
-                (String::from("1505"), 4),
-                (String::from("1"), 5),
-                (String::from("2"), 6),
-                (String::from("3"), 7),
-                (String::from("4"), 8),
-                (String::from("5"), 9),
-                (String::from("6"), 10),
-                (String::from("7"), 11),
+                ('\u{066D}', 4),
+                ('a', 5),
+                ('b', 6),
+                ('c', 7),
+                ('d', 8),
+                ('e', 9),
+                ('f', 10),
+                ('g', 11),
             ])
         );
     }
