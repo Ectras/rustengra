@@ -1,6 +1,6 @@
 use rustc_hash::FxHashMap;
 
-const BASE_SYMBOLS: &'static str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const BASE_SYMBOLS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 /// Get the symbol corresponding to `i` - runs through the usual 52 letters before
 /// resorting to unicode characters, starting at `chr(192)`.
@@ -35,14 +35,12 @@ pub fn ssa_to_replace_path(
     mut ssa_path: Vec<(usize, usize)>,
     tensor_len: usize,
 ) -> Vec<(usize, usize)> {
-    let mut next_id = tensor_len;
     let mut id_update = FxHashMap::default();
-    for (i, j) in &mut ssa_path {
+    for (next_id, (i, j)) in (tensor_len..).zip(&mut ssa_path) {
         let left_id = *id_update.get(i).unwrap_or(i);
         let right_id = *id_update.get(j).unwrap_or(j);
 
         id_update.insert(next_id, left_id);
-        next_id += 1;
         *i = left_id;
         *j = right_id;
     }
@@ -63,14 +61,12 @@ pub fn replace_to_ssa_path(
     mut replace_path: Vec<(usize, usize)>,
     tensor_len: usize,
 ) -> Vec<(usize, usize)> {
-    let mut next_id = tensor_len;
     let mut id_update = FxHashMap::default();
-    for (i, j) in &mut replace_path {
+    for (next_id, (i, j)) in (tensor_len..).zip(&mut replace_path) {
         let left_id = *id_update.get(i).unwrap_or(i);
         let right_id = *id_update.get(j).unwrap_or(j);
 
         id_update.insert(*i, next_id);
-        next_id += 1;
         *i = left_id;
         *j = right_id;
     }
