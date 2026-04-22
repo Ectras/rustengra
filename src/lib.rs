@@ -160,33 +160,26 @@ pub fn cotengra_sa_tree(
             .call(args, Some(&kwargs))?;
         let args = (tree_obj,).into_pyobject(py)?;
 
+        let kwargs = PyDict::new(py);
         if let Some(seed) = seed {
-            let kwargs = PyDict::new(py);
             kwargs.set_item("seed", seed)?;
-
-            if let Some(steps) = steps {
-                kwargs.set_item("tsteps", steps)?;
-            }
-
-            if let Some(iter) = iter {
-                kwargs.set_item("numiter", iter)?;
-            }
-            kwargs.set_item("inplace", true)?;
-
-            cotengra
-                .getattr("pathfinders")?
-                .getattr("path_simulated_annealing")?
-                .call_method("simulated_anneal_tree", args, Some(&kwargs))?
-                .call_method0("get_ssa_path")?
-                .extract()
-        } else {
-            cotengra
-                .getattr("pathfinders")?
-                .getattr("path_simulated_annealing")?
-                .call_method1("simulated_anneal_tree", args)?
-                .call_method0("get_ssa_path")?
-                .extract()
         }
+
+        if let Some(steps) = steps {
+            kwargs.set_item("tsteps", steps)?;
+        }
+
+        if let Some(iter) = iter {
+            kwargs.set_item("numiter", iter)?;
+        }
+        kwargs.set_item("inplace", true)?;
+
+        cotengra
+            .getattr("pathfinders")?
+            .getattr("path_simulated_annealing")?
+            .call_method("simulated_anneal_tree", args, Some(&kwargs))?
+            .call_method0("get_ssa_path")?
+            .extract()
     })?;
 
     Ok(contraction_path)
@@ -221,29 +214,21 @@ pub fn cotengra_tree_tempering(
             .call(args, Some(&kwargs))?;
         let args = (tree_obj,).into_pyobject(py)?;
 
+        let kwargs = PyDict::new(py);
         if let Some(seed) = seed {
-            let kwargs = PyDict::new(py);
             kwargs.set_item("seed", seed)?;
-
-            if let Some(iter) = iter {
-                kwargs.set_item("numiter", iter)?;
-            }
-            kwargs.set_item("inplace", true)?;
-
-            cotengra
-                .getattr("pathfinders")?
-                .getattr("path_simulated_annealing")?
-                .call_method("parallel_temper_tree", args, Some(&kwargs))?
-                .call_method0("get_ssa_path")?
-                .extract()
-        } else {
-            cotengra
-                .getattr("pathfinders")?
-                .getattr("path_simulated_annealing")?
-                .call_method1("parallel_temper_tree", args)?
-                .call_method0("get_ssa_path")?
-                .extract()
         }
+        if let Some(iter) = iter {
+            kwargs.set_item("numiter", iter)?;
+        }
+        kwargs.set_item("inplace", true)?;
+
+        cotengra
+            .getattr("pathfinders")?
+            .getattr("path_simulated_annealing")?
+            .call_method("parallel_temper_tree", args, Some(&kwargs))?
+            .call_method0("get_ssa_path")?
+            .extract()
     })?;
 
     Ok(contraction_path)
