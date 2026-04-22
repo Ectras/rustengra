@@ -24,8 +24,14 @@ pub fn cotengra_check() -> PyResult<()> {
 /// The fields correspond to the attributes of the Python `sys` module.
 #[derive(Debug, Clone)]
 pub struct PythonInfo {
+    /// A string giving the absolute path of the executable binary for the Python
+    /// interpreter, on systems where this makes sense.
     pub executable: String,
+    /// A string containing the version number of the Python interpreter plus
+    /// additional information on the build number and compiler used.
     pub version: String,
+    /// A list of strings that specifies the search path for modules. Can be set by
+    /// specifying `PYTHONPATH`.
     pub path: Vec<String>,
 }
 
