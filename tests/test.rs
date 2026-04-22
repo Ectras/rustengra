@@ -36,7 +36,7 @@ fn cotengra_optimize_from_path_test() {
     let ssa_path = vec![(0, 1), (6, 2), (7, 3), (8, 4), (9, 5)];
 
     let contraction_path =
-        cotengra_optimize_from_path(&inputs, outputs, &size_dict, ssa_path, 8, true).unwrap();
+        cotengra_optimize_from_path(&inputs, outputs, &size_dict, ssa_path, 8).unwrap();
     assert_eq!(
         contraction_path,
         vec![(4, 5), (1, 6), (3, 7), (0, 2), (8, 9)]

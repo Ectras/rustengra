@@ -2,10 +2,7 @@ use pyo3::prelude::*;
 use pyo3::types::PyDict;
 use rustc_hash::FxHashMap;
 
-use crate::utils::replace_to_ssa_path;
-
 pub mod hyper;
-pub mod utils;
 
 /// Checks if Cotengra is installed in the current environment.
 ///
@@ -57,14 +54,12 @@ pub fn python_info() -> PyResult<PythonInfo> {
 /// a starting path as `vec![(usize, usize)]`, the subtree size for optimization as `u64` and `is_ssa` as bool.
 /// Creates a `ContractionTree` in Cotengra and calls `subtree_reconfigure` to find an improved
 /// Contraction. Returns a `PyResult` of the best new contraction path in SSA format.
-/// If input !`is_ssa` converts it to an SSA path.
 pub fn cotengra_optimize_from_path(
     inputs: &[Vec<usize>],
     outputs: &[usize],
     size_dict: &FxHashMap<usize, u64>,
     path: Vec<(usize, usize)>,
     subtree_size: usize,
-    is_ssa: bool,
 ) -> PyResult<Vec<(usize, usize)>> {
     Python::initialize();
     let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
@@ -72,13 +67,6 @@ pub fn cotengra_optimize_from_path(
 
         let kwargs = PyDict::new(py);
         kwargs.set_item("size_dict", size_dict)?;
-
-        let path = if is_ssa {
-            path
-        } else {
-            replace_to_ssa_path(path, inputs.len())
-        };
-
         kwargs.set_item("ssa_path", path)?;
 
         let opt_kwargs = PyDict::new(py);
