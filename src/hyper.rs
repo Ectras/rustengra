@@ -8,7 +8,7 @@ use rustc_hash::FxHashMap;
 /// Unassigned options will not be passed to the function and hence the Python
 /// default values will be used. Please see the cotengra documentation for details on
 /// the parameters.
-#[derive(Default)]
+#[derive(Debug, Clone, Default)]
 pub struct HyperOptions {
     max_time: Option<u64>,
     max_repeats: Option<usize>,
@@ -55,7 +55,7 @@ pub fn cotengra_hyperoptimizer(
     options: &HyperOptions,
 ) -> PyResult<Vec<(usize, usize)>> {
     Python::initialize();
-    let contraction_path: Vec<(usize, usize)> = Python::attach(|py| {
+    let contraction_path = Python::attach(|py| {
         let cotengra = PyModule::import(py, "cotengra")?;
 
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;

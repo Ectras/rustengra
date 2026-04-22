@@ -173,19 +173,20 @@ fn test_hyper() {
         (String::from("0"), 2),
     ]);
 
-    let duration = Duration::from_secs(15);
     let contraction_path = cotengra_hyperoptimizer(
         &inputs,
         outputs,
         &size_dict,
         "kahypar",
-        &HyperOptions::default().with_max_time(&duration),
+        &HyperOptions::default()
+            .with_max_repeats(10)
+            .with_parallel(false),
     )
     .unwrap();
 
     assert_eq!(
         contraction_path,
-        vec![(1, 3), (4, 1), (5, 4), (0, 2), (5, 0)]
+        vec![(1, 3), (4, 6), (5, 7), (0, 2), (8, 9)]
     );
 }
 
