@@ -1,27 +1,5 @@
 use rustc_hash::FxHashMap;
 
-const BASE_SYMBOLS: &str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-/// Get the symbol corresponding to `i` - runs through the usual 52 letters before
-/// resorting to unicode characters, starting at `chr(192)`.
-///
-/// See also <https://optimized-einsum.readthedocs.io/en/stable/autosummary/opt_einsum.parser.get_symbol.html#opt_einsum.parser.get_symbol>
-///
-/// # Examples
-/// ```
-/// # use rustengra::utils::get_symbol;
-/// assert_eq!(get_symbol(2), 'c');
-/// assert_eq!(get_symbol(200), 'Ŕ');
-/// assert_eq!(get_symbol(20000), '京');
-/// ```
-pub fn get_symbol(leg: usize) -> char {
-    if leg < BASE_SYMBOLS.len() {
-        BASE_SYMBOLS.chars().nth(leg).unwrap()
-    } else {
-        char::from_u32((leg + 140).try_into().unwrap()).unwrap()
-    }
-}
-
 /// Converts path from SSA to replace left path format.
 ///
 /// # Example

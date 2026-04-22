@@ -48,9 +48,9 @@ impl HyperOptions {
 /// Can also work with virtual environments if the binary is run from a terminal with
 /// actived virtual environment.
 pub fn cotengra_hyperoptimizer(
-    inputs: &[Vec<char>],
-    outputs: &[char],
-    size_dict: &FxHashMap<char, u64>,
+    inputs: &[Vec<usize>],
+    outputs: &[usize],
+    size_dict: &FxHashMap<usize, u64>,
     method: &str,
     options: &HyperOptions,
 ) -> PyResult<Vec<(usize, usize)>> {

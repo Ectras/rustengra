@@ -53,15 +53,15 @@ pub fn python_info() -> PyResult<PythonInfo> {
 
 /// Accepts tensor network information and returns an optimized ContractionTree via Cotengra.
 ///
-/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a size dict as `dict[char, int]`,
+/// Accepts inputs as `iterable[iterable[usize]]`, output as `iterable[usize]`, a size dict as `dict[usize, int]`,
 /// a starting path as `vec![(usize, usize)]`, the subtree size for optimization as `u64` and `is_ssa` as bool.
 /// Creates a `ContractionTree` in Cotengra and calls `subtree_reconfigure` to find an improved
 /// Contraction. Returns a `PyResult` of the best new contraction path in SSA format.
 /// If input !`is_ssa` converts it to an SSA path.
 pub fn cotengra_optimize_from_path(
-    inputs: &[Vec<char>],
-    outputs: &[char],
-    size_dict: &FxHashMap<char, u64>,
+    inputs: &[Vec<usize>],
+    outputs: &[usize],
+    size_dict: &FxHashMap<usize, u64>,
     path: Vec<(usize, usize)>,
     subtree_size: usize,
     is_ssa: bool,
@@ -101,15 +101,15 @@ pub fn cotengra_optimize_from_path(
 /// Accepts tensor network information and returns an optimized ContractionTree via
 /// Cotengra.
 ///
-/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a
-/// `size_dict` that maps from `char` to `u64` and a subtree size for optimization.
+/// Accepts inputs as `iterable[iterable[usize]]`, output as `iterable[usize]`, a
+/// `size_dict` that maps from `usize` to `u64` and a subtree size for optimization.
 /// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it with
 /// subtree reconfiguration. Returns a PyResult of the optimized tree converted to a
 /// SSA path.
 pub fn cotengra_optimized_greedy(
-    inputs: &[Vec<char>],
-    outputs: &[char],
-    size_dict: &FxHashMap<char, u64>,
+    inputs: &[Vec<usize>],
+    outputs: &[usize],
+    size_dict: &FxHashMap<usize, u64>,
     subtree_size: usize,
 ) -> PyResult<Vec<(usize, usize)>> {
     Python::initialize();
@@ -139,17 +139,17 @@ pub fn cotengra_optimized_greedy(
 /// Accepts tensor network information and returns an optimized ContractionTree via
 /// Cotengra.
 ///
-/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a
-/// `size_dict` that maps from `char` to `u64` and a subtree size for optimization.
+/// Accepts inputs as `iterable[iterable[usize]]`, output as `iterable[usize]`, a
+/// `size_dict` that maps from `usize` to `u64` and a subtree size for optimization.
 /// Creates a ContractionTree in Cotengra by a Greedy method and optimizes it with
 /// simualted annealing. Returns a PyResult of the optimized tree converted to a
 /// SSA path.
 pub fn cotengra_sa_tree(
-    inputs: &[Vec<char>],
-    outputs: &[char],
+    inputs: &[Vec<usize>],
+    outputs: &[usize],
     steps: Option<usize>,
     iter: Option<usize>,
-    size_dict: &FxHashMap<char, u64>,
+    size_dict: &FxHashMap<usize, u64>,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
     Python::initialize();
@@ -194,16 +194,16 @@ pub fn cotengra_sa_tree(
 /// Accepts tensor network information and returns an optimized ContractionTree via
 /// Cotengra.
 ///
-/// Accepts inputs as `iterable[iterable[char]]`, output as `iterable[char]`, a
-/// `size_dict` that maps from `char` to `u64` and a subtree size for optimization.
+/// Accepts inputs as `iterable[iterable[usize]]`, output as `iterable[usize]`, a
+/// `size_dict` that maps from `usize` to `u64` and a subtree size for optimization.
 /// Creates a ContractionTree in Cotengra by simulated annealing and optimizes it
 /// using tree tempering. Returns a PyResult of the optimized tree converted to a SSA
 /// path.
 pub fn cotengra_tree_tempering(
-    inputs: &[Vec<char>],
-    outputs: &[char],
+    inputs: &[Vec<usize>],
+    outputs: &[usize],
     iter: Option<usize>,
-    size_dict: &FxHashMap<char, u64>,
+    size_dict: &FxHashMap<usize, u64>,
     seed: Option<u64>,
 ) -> PyResult<Vec<(usize, usize)>> {
     Python::initialize();

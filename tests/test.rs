@@ -10,27 +10,27 @@ use rustengra::{
 #[test]
 fn cotengra_optimize_from_path_test() {
     let inputs = [
-        vec!['k', 'i', 'j'],
-        vec!['f', 'b', 'a'],
-        vec!['g', 'i', 'j'],
-        vec!['e', 'f', 'g'],
-        vec!['a', 'b', 'd', 'c'],
-        vec!['e', 'd', 'c'],
+        vec![10, 8, 9],
+        vec![5, 1, 0],
+        vec![6, 8, 9],
+        vec![4, 5, 6],
+        vec![0, 1, 3, 2],
+        vec![4, 3, 2],
     ];
-    let outputs = &['k', 'g'];
+    let outputs = &[10, 6];
 
     let size_dict = FxHashMap::from_iter([
-        ('a', 2),
-        ('b', 2),
-        ('c', 2),
-        ('d', 2),
-        ('e', 2),
-        ('f', 2),
-        ('g', 2),
-        ('h', 2),
-        ('i', 2),
-        ('j', 2),
-        ('k', 2),
+        (0, 2),
+        (1, 2),
+        (2, 2),
+        (3, 2),
+        (4, 2),
+        (5, 2),
+        (6, 2),
+        (7, 2),
+        (8, 2),
+        (9, 2),
+        (10, 2),
     ]);
 
     let ssa_path = vec![(0, 1), (6, 2), (7, 3), (8, 4), (9, 5)];
@@ -46,16 +46,16 @@ fn cotengra_optimize_from_path_test() {
 #[test]
 fn optimized_greedy_integration_test() {
     let inputs = [
-        vec!['a'],
-        vec!['b'],
-        vec!['a', 'c'],
-        vec!['c', 'b', 'd', 'e'],
-        vec!['d'],
-        vec!['e'],
+        vec![0],
+        vec![1],
+        vec![0, 2],
+        vec![2, 1, 3, 4],
+        vec![3],
+        vec![4],
     ];
     let outputs = &[];
 
-    let size_dict = FxHashMap::from_iter([('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2)]);
+    let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
 
     let contraction_path = cotengra_optimized_greedy(&inputs, outputs, &size_dict, 8).unwrap();
     assert_eq!(
@@ -67,16 +67,16 @@ fn optimized_greedy_integration_test() {
 #[test]
 fn sa_integration_test() {
     let inputs = [
-        vec!['a'],
-        vec!['b'],
-        vec!['a', 'c'],
-        vec!['c', 'b', 'd', 'e'],
-        vec!['d'],
-        vec!['e'],
+        vec![0],
+        vec![1],
+        vec![0, 2],
+        vec![2, 1, 3, 4],
+        vec![3],
+        vec![4],
     ];
     let outputs = &[];
 
-    let size_dict = FxHashMap::from_iter([('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2)]);
+    let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
 
     let contraction_path =
         cotengra_sa_tree(&inputs, outputs, None, None, &size_dict, Some(4)).unwrap();
@@ -90,16 +90,16 @@ fn sa_integration_test() {
 #[test]
 fn tempering_integration_test() {
     let inputs = [
-        vec!['a'],
-        vec!['b'],
-        vec!['a', 'c'],
-        vec!['c', 'b', 'd', 'e'],
-        vec!['d'],
-        vec!['e'],
+        vec![0],
+        vec![1],
+        vec![0, 2],
+        vec![2, 1, 3, 4],
+        vec![3],
+        vec![4],
     ];
     let outputs = &[];
 
-    let size_dict = FxHashMap::from_iter([('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2)]);
+    let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
 
     let contraction_path =
         cotengra_tree_tempering(&inputs, outputs, None, &size_dict, Some(4)).unwrap();
@@ -113,16 +113,16 @@ fn tempering_integration_test() {
 #[test]
 fn test_hyper() {
     let inputs = [
-        vec!['a'],
-        vec!['b'],
-        vec!['a', 'c'],
-        vec!['c', 'b', 'd', 'e'],
-        vec!['d'],
-        vec!['e'],
+        vec![0],
+        vec![1],
+        vec![0, 2],
+        vec![2, 1, 3, 4],
+        vec![3],
+        vec![4],
     ];
     let outputs = &[];
 
-    let size_dict = FxHashMap::from_iter([('a', 2), ('b', 2), ('c', 2), ('d', 2), ('e', 2)]);
+    let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
 
     let contraction_path = cotengra_hyperoptimizer(
         &inputs,
@@ -159,60 +159,60 @@ fn validate_path(path: &[(usize, usize)]) {
 #[test]
 fn test_stress_hyper() {
     let inputs = [
-        vec!['a'],
-        vec!['b'],
-        vec!['c'],
-        vec!['d'],
-        vec!['e'],
-        vec!['f'],
-        vec!['g'],
-        vec!['h'],
-        vec!['i'],
-        vec!['j'],
-        vec!['k', 'a'],
-        vec!['l', 'b'],
-        vec!['m', 'c'],
-        vec!['n', 'd'],
-        vec!['o', 'e'],
-        vec!['p', 'f'],
-        vec!['q', 'g'],
-        vec!['r', 'h'],
-        vec!['s', 'i'],
-        vec!['t', 'j'],
-        vec!['l'],
-        vec!['s'],
-        vec!['o'],
-        vec!['k'],
-        vec!['r'],
-        vec!['n'],
-        vec!['q'],
-        vec!['m'],
-        vec!['t'],
-        vec!['p'],
+        vec![0],
+        vec![1],
+        vec![2],
+        vec![3],
+        vec![4],
+        vec![5],
+        vec![6],
+        vec![7],
+        vec![8],
+        vec![9],
+        vec![10, 0],
+        vec![11, 1],
+        vec![12, 2],
+        vec![13, 3],
+        vec![14, 4],
+        vec![15, 5],
+        vec![16, 6],
+        vec![17, 7],
+        vec![18, 8],
+        vec![19, 9],
+        vec![11],
+        vec![18],
+        vec![14],
+        vec![10],
+        vec![17],
+        vec![13],
+        vec![16],
+        vec![12],
+        vec![19],
+        vec![15],
     ];
     let outputs = &[];
 
     let size_dict = FxHashMap::from_iter([
-        ('a', 2),
-        ('b', 2),
-        ('c', 2),
-        ('d', 2),
-        ('e', 2),
-        ('f', 2),
-        ('g', 2),
-        ('h', 2),
-        ('i', 2),
-        ('j', 2),
-        ('k', 2),
-        ('l', 2),
-        ('m', 2),
-        ('n', 2),
-        ('o', 2),
-        ('p', 2),
-        ('q', 2),
-        ('r', 2),
-        ('s', 2),
-        ('t', 2),
+        (0, 2),
+        (1, 2),
+        (2, 2),
+        (3, 2),
+        (4, 2),
+        (5, 2),
+        (6, 2),
+        (7, 2),
+        (8, 2),
+        (9, 2),
+        (10, 2),
+        (11, 2),
+        (12, 2),
+        (13, 2),
+        (14, 2),
+        (15, 2),
+        (16, 2),
+        (17, 2),
+        (18, 2),
+        (19, 2),
     ]);
 
     let duration = Duration::from_secs(15);
