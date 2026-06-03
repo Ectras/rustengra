@@ -4,6 +4,9 @@ use rustc_hash::FxHashMap;
 
 pub mod hyper;
 
+#[cfg(test)]
+mod utils;
+
 /// Checks if Cotengra is installed in the current environment.
 ///
 /// # Example
@@ -230,6 +233,8 @@ pub fn cotengra_tree_tempering(
 
 #[cfg(test)]
 mod tests {
+    use crate::utils::validate_path;
+
     use super::*;
 
     #[test]
@@ -262,10 +267,7 @@ mod tests {
 
         let contraction_path =
             cotengra_optimize_from_path(&inputs, outputs, &size_dict, ssa_path, 8).unwrap();
-        assert_eq!(
-            contraction_path,
-            vec![(4, 5), (1, 6), (3, 7), (0, 2), (8, 9)]
-        );
+        validate_path(&contraction_path);
     }
 
     #[test]
@@ -283,10 +285,7 @@ mod tests {
         let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
 
         let contraction_path = cotengra_optimized_greedy(&inputs, outputs, &size_dict, 8).unwrap();
-        assert_eq!(
-            contraction_path,
-            vec![(0, 2), (3, 6), (4, 7), (5, 8), (1, 9)]
-        );
+        validate_path(&contraction_path);
     }
 
     #[test]
@@ -306,10 +305,7 @@ mod tests {
         let contraction_path =
             cotengra_sa_tree(&inputs, outputs, None, None, &size_dict, Some(4)).unwrap();
 
-        assert_eq!(
-            contraction_path,
-            vec![(4, 5), (3, 6), (1, 7), (2, 8), (0, 9)]
-        );
+        validate_path(&contraction_path);
     }
 
     #[test]
@@ -329,9 +325,6 @@ mod tests {
         let contraction_path =
             cotengra_tree_tempering(&inputs, outputs, None, &size_dict, Some(4)).unwrap();
 
-        assert_eq!(
-            contraction_path,
-            vec![(1, 5), (3, 6), (4, 7), (2, 8), (0, 9)]
-        );
+        validate_path(&contraction_path);
     }
 }
