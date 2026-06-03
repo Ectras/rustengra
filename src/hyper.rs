@@ -47,6 +47,14 @@ impl HyperOptions {
     }
 }
 
+macro_rules! set_opt {
+    ($dict:expr, $key:expr, $value:expr) => {
+        if let Some(val) = &$value {
+            $dict.set_item($key, val)?;
+        }
+    };
+}
+
 impl<'a, 'py> IntoPyObject<'py> for &'a HyperOptions {
     type Target = PyDict;
     type Output = Bound<'py, Self::Target>;
@@ -54,18 +62,10 @@ impl<'a, 'py> IntoPyObject<'py> for &'a HyperOptions {
 
     fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
         let dict = PyDict::new(py);
-        if let Some(max_repeats) = self.max_repeats {
-            dict.set_item("max_repeats", max_repeats)?;
-        }
-        if let Some(max_time) = self.max_time {
-            dict.set_item("max_time", max_time)?;
-        }
-        if let Some(parallel) = self.parallel {
-            dict.set_item("parallel", parallel)?;
-        }
-        if let Some(slicing_reconf_opts) = &self.slicing_reconf_opts {
-            dict.set_item("slicing_reconf_opts", slicing_reconf_opts)?;
-        }
+        set_opt!(dict, "max_repeats", self.max_repeats);
+        set_opt!(dict, "max_time", self.max_time);
+        set_opt!(dict, "parallel", self.parallel);
+        set_opt!(dict, "slicing_reconf_opts", self.slicing_reconf_opts);
         Ok(dict)
     }
 }
