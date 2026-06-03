@@ -13,6 +13,7 @@ pub struct HyperOptions {
     max_time: Option<u64>,
     max_repeats: Option<usize>,
     parallel: Option<bool>,
+    slicing_reconf_opts: Option<SlicingReconfOpts>,
 }
 
 impl HyperOptions {
@@ -38,6 +39,61 @@ impl HyperOptions {
         self.parallel = Some(parallel);
         self
     }
+
+    /// Sets the `slicing_reconf_opts` argument for the HyperOptimizer.
+    pub fn with_slicing_reconf_opts(mut self, slicing_reconf_opts: SlicingReconfOpts) -> Self {
+        self.slicing_reconf_opts = Some(slicing_reconf_opts);
+        self
+    }
+}
+
+impl<'a, 'py> IntoPyObject<'py> for &'a HyperOptions {
+    type Target = PyDict;
+    type Output = Bound<'py, Self::Target>;
+    type Error = PyErr;
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        let dict = PyDict::new(py);
+        if let Some(max_repeats) = self.max_repeats {
+            dict.set_item("max_repeats", max_repeats)?;
+        }
+        if let Some(max_time) = self.max_time {
+            dict.set_item("max_time", max_time)?;
+        }
+        if let Some(parallel) = self.parallel {
+            dict.set_item("parallel", parallel)?;
+        }
+        if let Some(slicing_reconf_opts) = &self.slicing_reconf_opts {
+            dict.set_item("slicing_reconf_opts", slicing_reconf_opts)?;
+        }
+        Ok(dict)
+    }
+}
+
+/// The dynamic slicing options passed as `slicing_reconf_opts` keyword to the
+/// cotengra Hyperoptimizer.
+#[derive(Debug, Clone)]
+pub struct SlicingReconfOpts {
+    target_size: u64,
+}
+
+impl SlicingReconfOpts {
+    /// Creates new slicing reconf options.
+    pub fn new(target_size: u64) -> Self {
+        Self { target_size }
+    }
+}
+
+impl<'a, 'py> IntoPyObject<'py> for &'a SlicingReconfOpts {
+    type Target = PyDict;
+    type Output = Bound<'py, Self::Target>;
+    type Error = PyErr;
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        let dict = PyDict::new(py);
+        dict.set_item("target_size", self.target_size)?;
+        Ok(dict)
+    }
 }
 
 /// Runs the Hyperoptimizer of cotengra on the given inputs. Additional inputs to the
@@ -60,17 +116,8 @@ pub fn cotengra_hyperoptimizer(
 
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;
 
-        let kwargs = PyDict::new(py);
+        let kwargs = options.into_pyobject(py)?;
         kwargs.set_item("methods", method)?;
-        if let Some(max_repeats) = options.max_repeats {
-            kwargs.set_item("max_repeats", max_repeats)?;
-        }
-        if let Some(max_time) = options.max_time {
-            kwargs.set_item("max_time", max_time)?;
-        }
-        if let Some(parallel) = options.parallel {
-            kwargs.set_item("parallel", parallel)?;
-        }
 
         let opt = cotengra.call_method("HyperOptimizer", (), Some(&kwargs))?;
         opt.call_method1("search", args)?
