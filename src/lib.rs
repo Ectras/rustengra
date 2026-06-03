@@ -227,3 +227,111 @@ pub fn cotengra_tree_tempering(
 
     Ok(contraction_path)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn cotengra_optimize_from_path_test() {
+        let inputs = [
+            vec![10, 8, 9],
+            vec![5, 1, 0],
+            vec![6, 8, 9],
+            vec![4, 5, 6],
+            vec![0, 1, 3, 2],
+            vec![4, 3, 2],
+        ];
+        let outputs = &[10, 6];
+
+        let size_dict = FxHashMap::from_iter([
+            (0, 2),
+            (1, 2),
+            (2, 2),
+            (3, 2),
+            (4, 2),
+            (5, 2),
+            (6, 2),
+            (7, 2),
+            (8, 2),
+            (9, 2),
+            (10, 2),
+        ]);
+
+        let ssa_path = vec![(0, 1), (6, 2), (7, 3), (8, 4), (9, 5)];
+
+        let contraction_path =
+            cotengra_optimize_from_path(&inputs, outputs, &size_dict, ssa_path, 8).unwrap();
+        assert_eq!(
+            contraction_path,
+            vec![(4, 5), (1, 6), (3, 7), (0, 2), (8, 9)]
+        );
+    }
+
+    #[test]
+    fn optimized_greedy_test() {
+        let inputs = [
+            vec![0],
+            vec![1],
+            vec![0, 2],
+            vec![2, 1, 3, 4],
+            vec![3],
+            vec![4],
+        ];
+        let outputs = &[];
+
+        let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
+
+        let contraction_path = cotengra_optimized_greedy(&inputs, outputs, &size_dict, 8).unwrap();
+        assert_eq!(
+            contraction_path,
+            vec![(0, 2), (3, 6), (4, 7), (5, 8), (1, 9)]
+        );
+    }
+
+    #[test]
+    fn sa_integration_test() {
+        let inputs = [
+            vec![0],
+            vec![1],
+            vec![0, 2],
+            vec![2, 1, 3, 4],
+            vec![3],
+            vec![4],
+        ];
+        let outputs = &[];
+
+        let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
+
+        let contraction_path =
+            cotengra_sa_tree(&inputs, outputs, None, None, &size_dict, Some(4)).unwrap();
+
+        assert_eq!(
+            contraction_path,
+            vec![(4, 5), (3, 6), (1, 7), (2, 8), (0, 9)]
+        );
+    }
+
+    #[test]
+    fn tempering_integration_test() {
+        let inputs = [
+            vec![0],
+            vec![1],
+            vec![0, 2],
+            vec![2, 1, 3, 4],
+            vec![3],
+            vec![4],
+        ];
+        let outputs = &[];
+
+        let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
+
+        let contraction_path =
+            cotengra_tree_tempering(&inputs, outputs, None, &size_dict, Some(4)).unwrap();
+
+        assert_eq!(
+            contraction_path,
+            vec![(1, 5), (3, 6), (4, 7), (2, 8), (0, 9)]
+        );
+    }
+}

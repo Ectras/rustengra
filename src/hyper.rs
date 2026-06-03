@@ -80,3 +80,123 @@ pub fn cotengra_hyperoptimizer(
 
     Ok(contraction_path)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn validate_path(path: &[(usize, usize)]) {
+        let mut contracted = Vec::with_capacity(path.len());
+        for (u, v) in path {
+            assert!(
+                !contracted.contains(u),
+                "Contracting already contracted tensors: {u:?}, path: {path:?}"
+            );
+            contracted.push(*v);
+        }
+    }
+
+    #[test]
+    fn test_hyper() {
+        let inputs = [
+            vec![0],
+            vec![1],
+            vec![0, 2],
+            vec![2, 1, 3, 4],
+            vec![3],
+            vec![4],
+        ];
+        let outputs = &[];
+
+        let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
+
+        let contraction_path = cotengra_hyperoptimizer(
+            &inputs,
+            outputs,
+            &size_dict,
+            "kahypar",
+            &HyperOptions::default()
+                .with_max_repeats(10)
+                .with_parallel(false),
+        )
+        .unwrap();
+
+        validate_path(&contraction_path);
+    }
+
+    /// Test to check if Hyperoptimization object runs in Rustengra.
+    /// Due to the inherently non-deterministic nature and the short
+    /// run-time, this does not return a fixed contraction path.
+    /// Thus, we only check for validity of the returned path.
+    #[test]
+    fn test_stress_hyper() {
+        let inputs = [
+            vec![0],
+            vec![1],
+            vec![2],
+            vec![3],
+            vec![4],
+            vec![5],
+            vec![6],
+            vec![7],
+            vec![8],
+            vec![9],
+            vec![10, 0],
+            vec![11, 1],
+            vec![12, 2],
+            vec![13, 3],
+            vec![14, 4],
+            vec![15, 5],
+            vec![16, 6],
+            vec![17, 7],
+            vec![18, 8],
+            vec![19, 9],
+            vec![11],
+            vec![18],
+            vec![14],
+            vec![10],
+            vec![17],
+            vec![13],
+            vec![16],
+            vec![12],
+            vec![19],
+            vec![15],
+        ];
+        let outputs = &[];
+
+        let size_dict = FxHashMap::from_iter([
+            (0, 2),
+            (1, 2),
+            (2, 2),
+            (3, 2),
+            (4, 2),
+            (5, 2),
+            (6, 2),
+            (7, 2),
+            (8, 2),
+            (9, 2),
+            (10, 2),
+            (11, 2),
+            (12, 2),
+            (13, 2),
+            (14, 2),
+            (15, 2),
+            (16, 2),
+            (17, 2),
+            (18, 2),
+            (19, 2),
+        ]);
+
+        let duration = Duration::from_secs(15);
+        let contraction_path = cotengra_hyperoptimizer(
+            &inputs,
+            outputs,
+            &size_dict,
+            "kahypar",
+            &HyperOptions::default().with_max_time(&duration),
+        )
+        .unwrap();
+
+        validate_path(&contraction_path);
+    }
+}
