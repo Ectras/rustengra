@@ -1,6 +1,9 @@
 use std::time::Duration;
 
-use pyo3::{prelude::*, types::PyDict};
+use pyo3::{
+    prelude::*,
+    types::{PyDict, PyTuple},
+};
 use rustc_hash::FxHashMap;
 
 /// The keyword options for the cotengra Hyperoptimizer.
@@ -109,9 +112,10 @@ pub fn cotengra_hyperoptimizer(
     size_dict: &FxHashMap<usize, u64>,
     method: &str,
     options: &HyperOptions,
-) -> PyResult<Vec<(usize, usize)>> {
+) -> PyResult<(Vec<(usize, usize)>, Vec<usize>)> {
     Python::initialize();
-    let contraction_path = Python::attach(|py| {
+    Python::attach(|py| {
+        let builtins = PyModule::import(py, "builtins")?;
         let cotengra = PyModule::import(py, "cotengra")?;
 
         let args = (inputs, outputs, size_dict).into_pyobject(py)?;
@@ -120,12 +124,13 @@ pub fn cotengra_hyperoptimizer(
         kwargs.set_item("methods", method)?;
 
         let opt = cotengra.call_method("HyperOptimizer", (), Some(&kwargs))?;
-        opt.call_method1("search", args)?
-            .call_method0("get_ssa_path")?
-            .extract()
-    })?;
-
-    Ok(contraction_path)
+        let tree = opt.call_method1("search", args)?;
+        let path = tree.call_method0("get_ssa_path")?;
+        let sliced_legs = tree.getattr("sliced_inds")?;
+        let sliced_legs = builtins.call_method1("list", (sliced_legs,))?;
+        let res = PyTuple::new(py, vec![path, sliced_legs])?;
+        res.extract()
+    })
 }
 
 #[cfg(test)]
@@ -148,7 +153,7 @@ mod tests {
 
         let size_dict = FxHashMap::from_iter([(0, 2), (1, 2), (2, 2), (3, 2), (4, 2)]);
 
-        let contraction_path = cotengra_hyperoptimizer(
+        let (contraction_path, sliced_inds) = cotengra_hyperoptimizer(
             &inputs,
             outputs,
             &size_dict,
@@ -159,13 +164,10 @@ mod tests {
         )
         .unwrap();
 
+        assert!(sliced_inds.is_empty());
         validate_path(&contraction_path);
     }
 
-    /// Test to check if Hyperoptimization object runs in Rustengra.
-    /// Due to the inherently non-deterministic nature and the short
-    /// run-time, this does not return a fixed contraction path.
-    /// Thus, we only check for validity of the returned path.
     #[test]
     fn test_stress_hyper() {
         let inputs = [
@@ -226,7 +228,7 @@ mod tests {
         ]);
 
         let duration = Duration::from_secs(15);
-        let contraction_path = cotengra_hyperoptimizer(
+        let (contraction_path, sliced_inds) = cotengra_hyperoptimizer(
             &inputs,
             outputs,
             &size_dict,
@@ -235,6 +237,28 @@ mod tests {
         )
         .unwrap();
 
+        assert!(sliced_inds.is_empty());
+        validate_path(&contraction_path);
+    }
+
+    #[test]
+    fn slicing_reconf_opts() {
+        let inputs = [vec![0, 1], vec![1, 2], vec![2, 3], vec![3, 4], vec![4, 5]];
+        let outputs = &[];
+
+        let size_dict = FxHashMap::from_iter([(0, 8), (1, 8), (2, 8), (3, 8), (4, 8)]);
+
+        let slicing_reconf_opts = SlicingReconfOpts::new(4);
+        let (contraction_path, sliced_inds) = cotengra_hyperoptimizer(
+            &inputs,
+            outputs,
+            &size_dict,
+            "kahypar",
+            &HyperOptions::default().with_slicing_reconf_opts(slicing_reconf_opts),
+        )
+        .unwrap();
+
+        assert!(!sliced_inds.is_empty());
         validate_path(&contraction_path);
     }
 }
