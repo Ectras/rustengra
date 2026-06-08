@@ -16,6 +16,7 @@ pub struct HyperOptions {
     max_time: Option<u64>,
     max_repeats: Option<usize>,
     parallel: Option<bool>,
+    slicing_opts: Option<SlicingOpts>,
     slicing_reconf_opts: Option<SlicingReconfOpts>,
 }
 
@@ -40,6 +41,12 @@ impl HyperOptions {
     /// Sets the `parallel` argument for the HyperOptimizer.
     pub fn with_parallel(mut self, parallel: bool) -> Self {
         self.parallel = Some(parallel);
+        self
+    }
+
+    /// Sets the `slicing_opts` argument for the HyperOptimizer.
+    pub fn with_slicing_opts(mut self, slicing_opts: SlicingOpts) -> Self {
+        self.slicing_opts = Some(slicing_opts);
         self
     }
 
@@ -68,7 +75,76 @@ impl<'py> IntoPyObject<'py> for &HyperOptions {
         set_opt!(dict, "max_repeats", self.max_repeats);
         set_opt!(dict, "max_time", self.max_time);
         set_opt!(dict, "parallel", self.parallel);
+        set_opt!(dict, "slicing_opts", self.slicing_opts);
         set_opt!(dict, "slicing_reconf_opts", self.slicing_reconf_opts);
+        Ok(dict)
+    }
+}
+
+/// The slicing options passed as `slicing_opts` keyword to the cotengra
+/// Hyperoptimizer.
+///
+/// Unassigned options will not be passed to the function and hence the Python
+/// default values will be used. Please see the cotengra documentation for details on
+/// the parameters.
+#[derive(Debug, Clone, Default)]
+pub struct SlicingOpts {
+    target_size: Option<usize>,
+    target_slices: Option<usize>,
+    target_overhead: Option<f64>,
+    allow_outer: Option<bool>,
+    inplace: Option<bool>,
+}
+
+impl SlicingOpts {
+    /// Creates the default slicing options.
+    pub fn new() -> Self {
+        Self::default()
+    }
+
+    /// Sets the `target_size` argument for the slicing options.
+    pub fn with_target_size(mut self, target_size: usize) -> Self {
+        self.target_size = Some(target_size);
+        self
+    }
+
+    /// Sets the `target_slices` argument for the slicing options.
+    pub fn with_target_slices(mut self, target_slices: usize) -> Self {
+        self.target_slices = Some(target_slices);
+        self
+    }
+
+    /// Sets the `target_overhead` argument for the slicing options.
+    pub fn with_target_overhead(mut self, target_overhead: f64) -> Self {
+        self.target_overhead = Some(target_overhead);
+        self
+    }
+
+    /// Sets the `allow_outer` argument for the slicing options.
+    pub fn with_allow_outer(mut self, allow_outer: bool) -> Self {
+        self.allow_outer = Some(allow_outer);
+        self
+    }
+
+    /// Sets the `inplace` argument for the slicing options.
+    pub fn with_inplace(mut self, inplace: bool) -> Self {
+        self.inplace = Some(inplace);
+        self
+    }
+}
+
+impl<'py> IntoPyObject<'py> for &SlicingOpts {
+    type Target = PyDict;
+    type Output = Bound<'py, Self::Target>;
+    type Error = PyErr;
+
+    fn into_pyobject(self, py: Python<'py>) -> Result<Self::Output, Self::Error> {
+        let dict = PyDict::new(py);
+        set_opt!(dict, "target_size", self.target_size);
+        set_opt!(dict, "target_slices", self.target_slices);
+        set_opt!(dict, "target_overhead", self.target_overhead);
+        set_opt!(dict, "allow_outer", self.allow_outer);
+        set_opt!(dict, "inplace", self.inplace);
         Ok(dict)
     }
 }
