@@ -77,12 +77,12 @@ impl<'py> IntoPyObject<'py> for &HyperOptions {
 /// cotengra Hyperoptimizer.
 #[derive(Debug, Clone)]
 pub struct SlicingReconfOpts {
-    target_size: u64,
+    target_size: usize,
 }
 
 impl SlicingReconfOpts {
     /// Creates new slicing reconf options.
-    pub fn new(target_size: u64) -> Self {
+    pub fn new(target_size: usize) -> Self {
         Self { target_size }
     }
 }
