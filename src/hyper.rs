@@ -58,7 +58,7 @@ macro_rules! set_opt {
     };
 }
 
-impl<'a, 'py> IntoPyObject<'py> for &'a HyperOptions {
+impl<'py> IntoPyObject<'py> for &HyperOptions {
     type Target = PyDict;
     type Output = Bound<'py, Self::Target>;
     type Error = PyErr;
@@ -87,7 +87,7 @@ impl SlicingReconfOpts {
     }
 }
 
-impl<'a, 'py> IntoPyObject<'py> for &'a SlicingReconfOpts {
+impl<'py> IntoPyObject<'py> for &SlicingReconfOpts {
     type Target = PyDict;
     type Output = Bound<'py, Self::Target>;
     type Error = PyErr;
